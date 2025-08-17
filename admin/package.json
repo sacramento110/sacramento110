@@ -1,0 +1,32 @@
+{
+  "name": "ssma-admin-portal",
+  "version": "1.0.0",
+  "description": "SSMA Sacramento Events Management Admin Portal",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=3001 --entry-file=index.html",
+    "build": "echo 'No build process needed for vanilla JS admin portal'",
+    "preview": "live-server --port=3002 --entry-file=index.html",
+    "deploy": "gh-pages -d . -b admin-portal"
+  },
+  "keywords": [
+    "admin",
+    "portal",
+    "events",
+    "management",
+    "islamic",
+    "mosque"
+  ],
+  "author": "SSMA Sacramento",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "gh-pages": "^6.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/sacramento110.git",
+    "directory": "admin"
+  },
+  "homepage": "https://admin.sacramento110.org"
+}
