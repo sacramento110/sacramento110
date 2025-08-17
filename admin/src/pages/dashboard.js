@@ -1,12 +1,15 @@
 /**
  * Dashboard Page
- * Comprehensive analytics and overview
+ * Comprehensive analytics and overview with enhanced visualizations
  */
+
+import { ChartRenderer, AnalyticsProcessor } from '../components/charts.js';
 
 export class DashboardPage {
     constructor() {
         this.metrics = null;
         this.refreshInterval = null;
+        this.chartRenderer = new ChartRenderer();
     }
 
     async render(user, eventsService) {
@@ -196,62 +199,47 @@ export class DashboardPage {
                     </div>
                 </div>
 
-                <!-- Storage & Performance -->
+                <!-- Advanced Analytics Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Events Trends Chart -->
+                    <div class="admin-card">
+                        <h3 class="text-lg font-semibold text-admin-900 mb-4">Events Over Time</h3>
+                        <div id="events-trend-chart" class="h-64"></div>
+                    </div>
+
+                    <!-- Activity Breakdown Pie Chart -->
+                    <div class="admin-card">
+                        <h3 class="text-lg font-semibold text-admin-900 mb-4">Activity Breakdown</h3>
+                        <div id="activity-pie-chart" class="h-64 flex items-center justify-center"></div>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div id="storage-metric-card"></div>
+                    <div id="images-metric-card"></div>
+                    <div id="users-metric-card"></div>
+                    <div id="cleanup-metric-card"></div>
+                </div>
+
+                <!-- Additional Analytics -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Top Speakers Chart -->
                     <div class="admin-card">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-admin-600">Storage Used</p>
-                                <p class="text-2xl font-bold text-admin-900" id="storage-used">-</p>
-                            </div>
-                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 4v10a2 2 0 002 2h6a2 2 0 002-2V8M7 8h10M7 8l4 4 4-4"></path>
-                                </svg>
-                            </div>
-                        </div>
+                        <h3 class="text-lg font-semibold text-admin-900 mb-4">Top Speakers</h3>
+                        <div id="speakers-chart"></div>
                     </div>
 
+                    <!-- Event Locations Chart -->
                     <div class="admin-card">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-admin-600">Total Images</p>
-                                <p class="text-2xl font-bold text-admin-900" id="total-images">-</p>
-                            </div>
-                            <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                                <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </div>
+                        <h3 class="text-lg font-semibold text-admin-900 mb-4">Popular Locations</h3>
+                        <div id="locations-chart"></div>
                     </div>
 
+                    <!-- System Health Ring -->
                     <div class="admin-card">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-admin-600">Active Users</p>
-                                <p class="text-2xl font-bold text-admin-900" id="active-users">-</p>
-                            </div>
-                            <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="admin-card">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-admin-600">Last Cleanup</p>
-                                <p class="text-sm font-medium text-admin-900" id="last-cleanup">-</p>
-                            </div>
-                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
+                        <h3 class="text-lg font-semibold text-admin-900 mb-4">System Health</h3>
+                        <div id="system-health-ring" class="flex items-center justify-center h-40"></div>
                     </div>
                 </div>
             </div>
@@ -311,8 +299,8 @@ export class DashboardPage {
         // Update top speakers
         this.updateTopSpeakers();
 
-        // Update storage and performance metrics
-        this.updateStorageMetrics();
+        // Render enhanced charts and metrics
+        this.renderAdvancedCharts();
     }
 
     updateSystemHealth() {
@@ -530,10 +518,183 @@ export class DashboardPage {
         // Could show a toast notification here
     }
 
+    renderAdvancedCharts() {
+        if (!this.metrics) return;
+
+        // Process data for charts
+        const events = this.metrics.events || {};
+        const activity = this.metrics.activity || {};
+        const storage = this.metrics.storage || {};
+        const users = this.metrics.users || {};
+        const system = this.metrics.system || {};
+
+        // 1. Events Trend Chart
+        if (events.monthlyTrend) {
+            this.chartRenderer.createLineChart('events-trend-chart', events.monthlyTrend, {
+                title: '',
+                color: '#22c55e',
+                width: 500,
+                height: 200,
+                showDots: true,
+                showGrid: true
+            });
+        }
+
+        // 2. Activity Breakdown Pie Chart
+        if (activity.actionCounts) {
+            const activityData = Object.entries(activity.actionCounts).map(([action, count]) => ({
+                label: this.formatAction(action),
+                value: count
+            }));
+            
+            this.chartRenderer.createPieChart('activity-pie-chart', activityData, {
+                size: 200,
+                colors: ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'],
+                showLegend: true
+            });
+        }
+
+        // 3. Top Speakers Bar Chart
+        if (events.topSpeakers) {
+            this.chartRenderer.createBarChart('speakers-chart', events.topSpeakers, {
+                color: '#3b82f6',
+                maxHeight: 150,
+                showValues: true,
+                animate: true
+            });
+        }
+
+        // 4. Event Locations Bar Chart
+        if (events.eventsByLocation) {
+            this.chartRenderer.createBarChart('locations-chart', events.eventsByLocation, {
+                color: '#f59e0b',
+                maxHeight: 150,
+                showValues: true,
+                animate: true
+            });
+        }
+
+        // 5. System Health Progress Ring
+        const healthPercentage = this.calculateSystemHealthPercentage(system);
+        this.chartRenderer.createProgressRing('system-health-ring', healthPercentage, {
+            size: 120,
+            strokeWidth: 10,
+            color: healthPercentage > 80 ? '#22c55e' : healthPercentage > 60 ? '#f59e0b' : '#ef4444',
+            backgroundColor: '#e5e7eb',
+            showPercentage: true,
+            label: 'System Health'
+        });
+
+        // 6. Enhanced Metric Cards
+        this.renderMetricCards(storage, users, system);
+    }
+
+    renderMetricCards(storage, users, system) {
+        // Storage Metric Card
+        this.chartRenderer.createMetricCard('storage-metric-card', {
+            title: 'Storage Used',
+            value: this.parseStorageSize(storage?.formattedSize || '0 MB'),
+            format: 'storage',
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 4v10a2 2 0 002 2h6a2 2 0 002-2V8M7 8h10M7 8l4 4 4-4"></path>
+            </svg>`,
+            color: 'purple'
+        });
+
+        // Images Metric Card
+        this.chartRenderer.createMetricCard('images-metric-card', {
+            title: 'Total Images',
+            value: storage?.totalFiles || 0,
+            format: 'number',
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>`,
+            color: 'blue'
+        });
+
+        // Users Metric Card
+        this.chartRenderer.createMetricCard('users-metric-card', {
+            title: 'Active Users',
+            value: users?.activeUsers || 0,
+            format: 'number',
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+            </svg>`,
+            color: 'green'
+        });
+
+        // Cleanup Metric Card
+        this.chartRenderer.createMetricCard('cleanup-metric-card', {
+            title: 'Last Cleanup',
+            value: 'Today',
+            format: 'text',
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>`,
+            color: 'green'
+        });
+    }
+
+    calculateSystemHealthPercentage(system) {
+        if (!system || !system.services) return 0;
+        
+        const services = system.services;
+        const config = system.config || {};
+        
+        let healthyCount = 0;
+        let totalCount = 0;
+        
+        // Check services
+        if (services.sheets?.connected) healthyCount++;
+        totalCount++;
+        
+        if (services.drive?.connected) healthyCount++;
+        totalCount++;
+        
+        if (services.auth?.hasOAuthClientId) healthyCount++;
+        totalCount++;
+        
+        // Check configuration
+        if (config.hasEventsSheetId) healthyCount++;
+        totalCount++;
+        
+        if (config.hasOAuthClientId) healthyCount++;
+        totalCount++;
+        
+        if (config.hasSuperAdmin) healthyCount++;
+        totalCount++;
+        
+        return totalCount > 0 ? Math.round((healthyCount / totalCount) * 100) : 0;
+    }
+
+    parseStorageSize(sizeString) {
+        // Simple parser for storage size strings like "5.2 MB"
+        const match = sizeString.match(/^([\d.]+)\s*(\w+)$/);
+        if (!match) return 0;
+        
+        const value = parseFloat(match[1]);
+        const unit = match[2].toUpperCase();
+        
+        switch (unit) {
+            case 'KB': return value / 1024;
+            case 'MB': return value;
+            case 'GB': return value * 1024;
+            default: return value;
+        }
+    }
+
+    formatAction(action) {
+        return action.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
     destroy() {
         if (this.refreshInterval) {
             clearInterval(this.refreshInterval);
             this.refreshInterval = null;
+        }
+        
+        if (this.chartRenderer) {
+            this.chartRenderer.destroy();
         }
     }
 }

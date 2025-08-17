@@ -3,17 +3,19 @@
  * Handles Google OAuth authentication
  */
 
+import { getConfig } from '../config/production.js';
+
 export class AuthService {
     constructor() {
+        const config = getConfig();
         this.config = {
-            // Replace with your actual Google OAuth Client ID
-            googleClientId: 'YOUR_GOOGLE_OAUTH_CLIENT_ID',
+            googleClientId: config.AUTH.CLIENT_ID,
             storageKeys: {
                 token: 'ssma_admin_token',
                 user: 'ssma_admin_user',
                 expires: 'ssma_admin_expires'
             },
-            tokenExpiry: 24 * 60 * 60 * 1000 // 24 hours
+            tokenExpiry: config.SECURITY.SESSION_TIMEOUT
         };
         
         this.googleAuth = null;
@@ -200,8 +202,8 @@ export class AuthService {
      */
     async verifyTokenWithBackend(idToken) {
         try {
-            // Replace with your actual Google Apps Script URL
-            const backendUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+            const config = getConfig();
+            const backendUrl = config.BACKEND.API_URL;
             
             const response = await fetch(`${backendUrl}?path=${encodeURIComponent('/api/admin/auth/verify')}`, {
                 method: 'POST',
