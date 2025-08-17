@@ -4,17 +4,21 @@
  */
 
 import { Event, EventFormData } from '@/types/event';
+import { getConfig } from '@/config/production';
+
+// Get configuration
+const config = getConfig();
 
 // Configuration
 const API_CONFIG = {
-  // Replace with your deployed Google Apps Script URL
-  BASE_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+  // Get from production config
+  BASE_URL: config.BACKEND.API_URL,
   
   // Request timeout
-  TIMEOUT: 30000, // 30 seconds
+  TIMEOUT: config.BACKEND.TIMEOUT,
   
   // Retry configuration
-  MAX_RETRIES: 3,
+  MAX_RETRIES: config.BACKEND.MAX_RETRIES,
   RETRY_DELAY: 1000 // 1 second
 };
 

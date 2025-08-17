@@ -7,7 +7,7 @@ export const PRODUCTION_CONFIG = {
   // Google Apps Script Configuration
   BACKEND: {
     // Replace with your deployed Google Apps Script URL
-    API_URL: 'https://script.google.com/macros/s/YOUR_GOOGLE_APPS_SCRIPT_ID/exec',
+    API_URL: process.env.VITE_GOOGLE_APPS_SCRIPT_URL || 'https://script.google.com/macros/s/YOUR_GOOGLE_APPS_SCRIPT_ID/exec',
     TIMEOUT: 30000,
     MAX_RETRIES: 3
   },
@@ -15,12 +15,13 @@ export const PRODUCTION_CONFIG = {
   // Google OAuth Configuration
   AUTH: {
     // Replace with your Google OAuth Client ID
-    CLIENT_ID: 'YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com',
+    CLIENT_ID: process.env.VITE_GOOGLE_OAUTH_CLIENT_ID || 'YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com',
     
     // Authorized domains for OAuth
     AUTHORIZED_DOMAINS: [
       'https://sacramento110.org',
-      'https://admin.sacramento110.org'
+      'https://admin.sacramento110.org',
+      'https://armanahmed.github.io' // GitHub Pages fallback
     ]
   },
 
