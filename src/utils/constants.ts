@@ -54,3 +54,9 @@ export const GOOGLE_CONFIG = {
   sheetsApiUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
   driveBaseUrl: 'https://drive.google.com/uc?id='
 };
+
+// YouTube configuration
+export const YOUTUBE_CONFIG = {
+  placeholderThumbnail: '/sacramento110/images/imam-hussain-shrine.jpg', // Use existing image as placeholder
+  defaultThumbnailQuality: 'hqdefault' as const
+};

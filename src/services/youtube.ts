@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { YouTubeVideo } from '@/types/youtube';
+import { YOUTUBE_CONFIG } from '@/utils/constants';
 
 const CACHE_URL = '/sacramento110/youtube-cache.json';
 const RSS2JSON_API = 'https://api.rss2json.com/v1/api.json';
@@ -53,17 +54,22 @@ export const fetchYouTubeVideos = async (): Promise<{ videos: YouTubeVideo[]; er
       });
       
       if (response.data.status === 'ok') {
-        const videos = response.data.items.map((item: any) => ({
-          id: item.guid,
-          title: item.title,
-          description: item.description || item.content || '',
-          thumbnail: extractThumbnailFromDescription(item.description) || `https://img.youtube.com/vi/${extractVideoId(item.link)}/hqdefault.jpg`,
-          publishedAt: item.pubDate,
-          videoId: extractVideoId(item.link),
-          channelTitle: response.data.feed.title,
-          duration: '',
-          viewCount: ''
-        }));
+        const videos = response.data.items.map((item: any) => {
+          const videoId = extractVideoId(item.link);
+          const extractedThumbnail = extractThumbnailFromDescription(item.description);
+          
+          return {
+            id: item.guid,
+            title: item.title,
+            description: item.description || item.content || '',
+            thumbnail: extractedThumbnail || (videoId ? `https://img.youtube.com/vi/${videoId}/${YOUTUBE_CONFIG.defaultThumbnailQuality}.jpg` : YOUTUBE_CONFIG.placeholderThumbnail),
+            publishedAt: item.pubDate,
+            videoId: videoId,
+            channelTitle: response.data.feed.title,
+            duration: '',
+            viewCount: ''
+          };
+        });
         
         console.log(`Fallback: Successfully fetched ${videos.length} videos from RSS2JSON`);
         return { videos };
@@ -91,12 +97,15 @@ const extractVideoId = (youtubeUrl: string): string => {
 const extractThumbnailFromDescription = (description: string): string => {
   // Try to extract thumbnail from description HTML
   const match = description?.match(/<img[^>]+src="([^">]+)"/);
-  return match ? match[1] : `https://img.youtube.com/vi/DEFAULT/maxresdefault.jpg`;
+  return match ? match[1] : '';
 };
 
 // Mock data for development/fallback
 
 
 export const getVideoThumbnail = (videoId: string, quality: 'default' | 'medium' | 'high' | 'maxres' = 'maxres'): string => {
+  if (!videoId || videoId.trim() === '') {
+    return YOUTUBE_CONFIG.placeholderThumbnail; // Return placeholder for invalid video IDs
+  }
   return `https://img.youtube.com/vi/${videoId}/${quality}default.jpg`;
 };
