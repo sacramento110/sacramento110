@@ -1,13 +1,9 @@
-import { usePrayerTimes } from '@/hooks/usePrayerTimes';
-import { useRealTimeCountdown } from '@/hooks/useRealTimeCountdown';
 import { SSMA_INFO } from '@/utils/constants';
-import { Clock, Heart, Menu, X } from 'lucide-react';
+import { Heart, Menu, X } from 'lucide-react';
 import React, { useState } from 'react';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { nextPrayer } = usePrayerTimes();
-  const countdown = useRealTimeCountdown(nextPrayer?.time || null);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -18,16 +14,6 @@ export const Header: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-lg z-40 border-b border-islamic-gold-200">
       <div className="container mx-auto px-4">
-        {/* Next Prayer Banner - Mobile Only */}
-        {nextPrayer && countdown && (
-          <div className="md:hidden flex items-center justify-center space-x-2 bg-islamic-green-50 py-2 border-b border-islamic-green-200">
-            <Clock className="w-3 h-3 text-islamic-green-600" />
-            <span className="text-xs font-medium text-islamic-green-700 font-mono">
-              Next: {nextPrayer.name} in {countdown}
-            </span>
-          </div>
-        )}
-
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
@@ -43,16 +29,6 @@ export const Header: React.FC = () => {
               </p>
             </div>
           </div>
-
-          {/* Next Prayer Indicator - Desktop */}
-          {nextPrayer && countdown && (
-            <div className="hidden lg:flex items-center space-x-2 bg-islamic-green-50 px-4 py-2 rounded-full">
-              <Clock className="w-4 h-4 text-islamic-green-600" />
-              <span className="text-sm font-medium text-islamic-green-700 font-mono">
-                Next: {nextPrayer.name} in {countdown}
-              </span>
-            </div>
-          )}
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
@@ -107,16 +83,6 @@ export const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200 bg-white">
             <div className="flex flex-col space-y-3">
-              {/* Next Prayer - Mobile */}
-              {nextPrayer && countdown && (
-                <div className="flex items-center justify-center space-x-2 bg-islamic-green-50 px-4 py-2 rounded-lg mb-2">
-                  <Clock className="w-4 h-4 text-islamic-green-600" />
-                  <span className="text-sm font-medium text-islamic-green-700 font-mono">
-                    Next: {nextPrayer.name} in {countdown}
-                  </span>
-                </div>
-              )}
-
               <button
                 onClick={() => scrollToSection('hero')}
                 className="text-left py-3 text-gray-700 hover:text-islamic-green-600 transition-colors touch-friendly w-full"

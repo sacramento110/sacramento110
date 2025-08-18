@@ -49,12 +49,12 @@ export const PRAYER_ICONS = {
 };
 
 // About SSMA content
-export const ABOUT_CONTENT = `The Sacramento Shia Muslim Association (SSMA) is a non-profit organization dedicated to serving the Urdu-speaking Shia community of Greater Sacramento by fostering spiritual growth, preserving Urdu heritage, and promoting Islamic values of compassion and unity through diverse religious, cultural, and community programs. SSMA provides regular lectures, Quranic teachings, religious commemorations, and cultural events to nurture the spiritual and social needs of its members, strengthen community bonds, and inspire the practice of Islamic principles as taught in the Holy Qur'an and the traditions of Prophet Muhammad (S) and the Ahlul Bayt (AS). Committed to inclusivity, compassion, and service, SSMA strives to be a welcoming home for believers and a beacon of truth, and peace for the broader community.`;
+export const ABOUT_CONTENT = `The Sacramento Shia Muslim Association (SSMA) is a non-profit serving the Urdu-speaking Shia community of Greater Sacramento. It nurtures faith, preserves Urdu heritage, and builds unity through religious, cultural, and community programs. Rooted in Islamic values of compassion and inclusivity, SSMA strives to be a welcoming home for believers and a source of peace for all.`;
 
 // Donation information
 export const DONATION_INFO = {
   venmo: {
-    handle: '@SacramentoShia',
+    handle: '@ssma786',
     qrCode: 'images/Venmo.jpeg',
   },
   zelle: {

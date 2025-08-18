@@ -46,17 +46,22 @@ export const usePrayerTimes = () => {
     nextPrayer,
     loading,
     error,
-    refetch: () => {
-      setLoading(true);
-      calculatePrayerTimes().then(times => {
+    refetch: async () => {
+      try {
+        setLoading(true);
+        const times = await calculatePrayerTimes();
         const timesArray = getPrayerTimesArray(times);
         const next = getNextPrayerTime(timesArray);
 
         setPrayerTimes(times);
         setPrayerTimesArray(timesArray);
         setNextPrayer(next);
+        setError(null);
+      } catch (err) {
+        setError('Failed to load prayer times');
+      } finally {
         setLoading(false);
-      });
+      }
     },
   };
 };

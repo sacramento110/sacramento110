@@ -1,9 +1,50 @@
+import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { DONATION_INFO, getImagePath } from '@/utils/constants';
-import { CreditCard, Heart, QrCode, Smartphone } from 'lucide-react';
+import {
+  CreditCard,
+  ExternalLink,
+  Heart,
+  QrCode,
+  Smartphone,
+} from 'lucide-react';
 import React from 'react';
 
 export const DonationSection: React.FC = () => {
+  const handleVenmoClick = () => {
+    const venmoUsername = DONATION_INFO.venmo.handle.replace('@', '');
+
+    // Correct Venmo URL scheme to open the app directly to a user's profile
+    const venmoAppUrl = `venmo://users/${venmoUsername}`;
+    const webVenmoUrl = `https://venmo.com/u/${venmoUsername}`;
+
+    // Check if we're on mobile
+    const isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+
+    if (isMobile) {
+      // On mobile, try to open the Venmo app
+      try {
+        window.location.href = venmoAppUrl;
+
+        // Fallback to web version if app doesn't open
+        setTimeout(() => {
+          if (document.hasFocus()) {
+            window.open(webVenmoUrl, '_blank');
+          }
+        }, 3000);
+      } catch (error) {
+        // If deep link fails, open web version
+        window.open(webVenmoUrl, '_blank');
+      }
+    } else {
+      // On desktop, open web version directly
+      window.open(webVenmoUrl, '_blank');
+    }
+  };
+
   return (
     <section
       id="donate"
@@ -50,12 +91,22 @@ export const DonationSection: React.FC = () => {
               />
             </div>
 
-            <div className="space-y-2 xs:space-y-3">
+            <div className="space-y-3 xs:space-y-4">
               <div className="flex items-center justify-center space-x-2 text-blue-600">
                 <QrCode className="w-4 h-4 xs:w-5 xs:h-5" />
                 <span className="font-semibold text-sm xs:text-base">
                   Scan QR Code
                 </span>
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  onClick={handleVenmoClick}
+                  className="bg-blue-600 hover:bg-blue-700 text-white w-full touch-friendly"
+                  icon={ExternalLink}
+                >
+                  Open Venmo App
+                </Button>
               </div>
             </div>
           </Card>
@@ -88,7 +139,7 @@ export const DonationSection: React.FC = () => {
               </div>
 
               <p className="text-gray-600 text-sm xs:text-base">
-                Use your bank's Zelle service to send money
+                Use your bank&apos;s Zelle service to send money
               </p>
             </div>
           </Card>
@@ -100,9 +151,9 @@ export const DonationSection: React.FC = () => {
             Your Donations Make a Difference
           </h3>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Every contribution helps us provide religious services, community
-            programs, and support to families in need. Your generosity enables
-            us to continue serving the Sacramento Shia Muslim community.
+            Every contribution helps us provide religious services and community
+            programs. Your generosity enables us to continue serving the
+            Sacramento Shia Muslim community.
           </p>
         </div>
       </div>

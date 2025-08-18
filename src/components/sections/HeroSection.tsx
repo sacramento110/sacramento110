@@ -1,9 +1,14 @@
 import { Button } from '@/components/ui/Button';
+import { usePrayerTimes } from '@/hooks/usePrayerTimes';
+import { useRealTimeCountdown } from '@/hooks/useRealTimeCountdown';
 import { SSMA_INFO, getImagePath } from '@/utils/constants';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Clock } from 'lucide-react';
 import React from 'react';
 
 export const HeroSection: React.FC = () => {
+  const { nextPrayer } = usePrayerTimes();
+  const countdown = useRealTimeCountdown(nextPrayer?.time || null);
+
   const scrollToNextSection = () => {
     const element = document.getElementById('prayer-times');
     element?.scrollIntoView({ behavior: 'smooth' });
@@ -25,9 +30,23 @@ export const HeroSection: React.FC = () => {
         {/* Main Logo/Icon */}
         <div className="mb-6 xs:mb-8">
           <div className="w-20 h-20 xs:w-24 xs:h-24 bg-islamic-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-2xl">
-            <span className="text-white font-bold text-base xs:text-lg">SSMA</span>
+            <span className="text-white font-bold text-base xs:text-lg">
+              SSMA
+            </span>
           </div>
         </div>
+
+        {/* Next Prayer Panel */}
+        {nextPrayer && countdown && (
+          <div className="mb-6 xs:mb-8">
+            <div className="bg-white/95 backdrop-blur-sm border border-islamic-green-200 rounded-full px-4 xs:px-6 py-2 xs:py-3 mx-auto inline-flex items-center space-x-2 shadow-lg">
+              <Clock className="w-4 h-4 text-islamic-green-600" />
+              <span className="text-sm xs:text-base font-medium text-islamic-green-700 font-mono">
+                Next: {nextPrayer.name} in {countdown}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Main Title */}
         <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 xs:mb-6 hero-text-shadow animate-fade-in leading-tight">

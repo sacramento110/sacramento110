@@ -1,9 +1,9 @@
-import React from 'react';
-import { Clock, RefreshCw } from 'lucide-react';
-import { usePrayerTimes } from '@/hooks/usePrayerTimes';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { usePrayerTimes } from '@/hooks/usePrayerTimes';
+import { Clock, RefreshCw } from 'lucide-react';
+import React from 'react';
 
 export const PrayerTimesSection: React.FC = () => {
   const { prayerTimesArray, loading, error, refetch } = usePrayerTimes();
@@ -75,7 +75,9 @@ export const PrayerTimesSection: React.FC = () => {
               className={`prayer-card ${prayer.isActive ? 'active' : ''}`}
             >
               {/* Prayer Icon */}
-              <div className="text-3xl xs:text-4xl mb-2 xs:mb-3">{prayer.icon}</div>
+              <div className="text-3xl xs:text-4xl mb-2 xs:mb-3">
+                {prayer.icon}
+              </div>
 
               {/* Prayer Name */}
               <h3
@@ -109,6 +111,13 @@ export const PrayerTimesSection: React.FC = () => {
 
         {/* Prayer Times Horizontal Scroll - Mobile */}
         <div className="md:hidden">
+          {/* Mobile Scroll Hint */}
+          <div className="mb-4 text-center">
+            <p className="text-xs text-gray-500">
+              Swipe horizontally to view all prayer times
+            </p>
+          </div>
+
           <div className="scroll-container mobile-scroll px-4 -mx-4">
             {prayerTimesArray.map(prayer => (
               <Card
@@ -146,13 +155,6 @@ export const PrayerTimesSection: React.FC = () => {
                 )}
               </Card>
             ))}
-          </div>
-
-          {/* Mobile Scroll Hint */}
-          <div className="mt-4 text-center">
-            <p className="text-xs text-gray-500">
-              Swipe horizontally to view all prayer times
-            </p>
           </div>
         </div>
       </div>

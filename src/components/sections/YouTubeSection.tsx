@@ -1,12 +1,12 @@
-import React from 'react';
-import { Play, Youtube, Calendar, ExternalLink } from 'lucide-react';
-import { useYouTubeVideos } from '@/hooks/useYouTubeVideos';
-import { useModal } from '@/hooks/useModal';
-import { VideoModal } from '@/components/ui/VideoModal';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { VideoModal } from '@/components/ui/VideoModal';
+import { useModal } from '@/hooks/useModal';
+import { useYouTubeVideos } from '@/hooks/useYouTubeVideos';
 import { SSMA_INFO } from '@/utils/constants';
+import { Calendar, ExternalLink, Play, Youtube } from 'lucide-react';
+import React from 'react';
 
 export const YouTubeSection: React.FC = () => {
   const { videos, loading, error } = useYouTubeVideos();
@@ -68,6 +68,13 @@ export const YouTubeSection: React.FC = () => {
 
         {!loading && !error && videos.length > 0 && (
           <>
+            {/* Mobile Scroll Hint */}
+            <div className="mb-4 xs:mb-6 text-center md:hidden">
+              <p className="text-sm text-gray-500">
+                Swipe horizontally to see more videos
+              </p>
+            </div>
+
             {/* Videos Horizontal Scroll */}
             <div className="scroll-container mobile-scroll">
               {videos.map(video => (
@@ -121,13 +128,6 @@ export const YouTubeSection: React.FC = () => {
                   </div>
                 </Card>
               ))}
-            </div>
-
-            {/* Mobile Scroll Hint */}
-            <div className="mt-4 xs:mt-6 text-center md:hidden">
-              <p className="text-sm text-gray-500">
-                Swipe horizontally to see more videos
-              </p>
             </div>
           </>
         )}
