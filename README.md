@@ -7,7 +7,7 @@ A modern, mobile-first website for the Sacramento Shia Muslim Association featur
 - 🕌 **Real-time Prayer Times** - Jafari method with live countdown and DST handling
 - 📺 **YouTube Integration** - Latest videos with smart caching and modal viewing
 - 💰 **Digital Donations** - QR codes for Venmo and Zelle payments
-- 📧 **Newsletter Signup** - Community updates and notifications
+<!-- - 📧 **Newsletter Signup** - Community updates and notifications -->
 - 📱 **Mobile-First Design** - Touch-friendly interface optimized for mobile devices
 - 🎨 **Islamic Theme** - Traditional green, gold, and navy color palette
 

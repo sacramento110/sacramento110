@@ -6,7 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { AboutSection } from '@/components/sections/AboutSection';
 import { DonationSection } from '@/components/sections/DonationSection';
-import { NewsletterSection } from '@/components/sections/NewsletterSection';
+// import { NewsletterSection } from '@/components/sections/NewsletterSection';
 import { YouTubeSection } from '@/components/sections/YouTubeSection';
 
 // Main homepage component
@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
       <YouTubeSection />
       <AboutSection />
       <DonationSection />
-      <NewsletterSection />
+      {/* <NewsletterSection /> */}
     </>
   );
 };

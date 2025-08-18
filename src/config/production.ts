@@ -16,7 +16,7 @@ export const PRODUCTION_CONFIG = {
   FEATURES: {
     ENABLE_PRAYER_TIMES: true,
     ENABLE_YOUTUBE: true,
-    ENABLE_NEWSLETTER: true,
+    ENABLE_NEWSLETTER: false, // Disabled until email subscription facility is ready
     ENABLE_DONATIONS: true,
     ENABLE_ANALYTICS: true,
   },
