@@ -16,16 +16,8 @@ interface CacheData {
 
 // Utility function to get the correct base path for cache
 const getCacheUrl = (): string => {
-  // Check if we're in development mode (localhost)
-  if (
-    typeof window !== 'undefined' &&
-    window.location.hostname === 'localhost'
-  ) {
-    return `/${CACHE_URL}`;
-  }
-
-  // Production mode - use the full path
-  return `/sacramento110/${CACHE_URL}`;
+  // Always use root path for both development and production
+  return `/${CACHE_URL}`;
 };
 
 export const fetchYouTubeVideos = async (): Promise<{
