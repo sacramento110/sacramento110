@@ -11,7 +11,6 @@ export const calculatePrayerTimes = async (): Promise<PrayerTimes> => {
     if (!PrayTime) {
       try {
         const prayTimeModule = await import('praytime');
-        // @ts-ignore
         PrayTime =
           prayTimeModule.PrayTime ||
           prayTimeModule.default?.PrayTime ||
