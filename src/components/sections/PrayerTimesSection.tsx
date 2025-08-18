@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { QiblaCompass } from '@/components/ui/QiblaCompass';
 import { usePrayerTimes } from '@/hooks/usePrayerTimes';
 import { Clock, RefreshCw } from 'lucide-react';
 import React from 'react';
@@ -158,11 +157,6 @@ export const PrayerTimesSection: React.FC = () => {
               </Card>
             ))}
           </div>
-        </div>
-
-        {/* Qibla Direction Finder - Mobile Only */}
-        <div className="mt-12 md:mt-16">
-          <QiblaCompass className="max-w-md mx-auto" />
         </div>
       </div>
     </section>
