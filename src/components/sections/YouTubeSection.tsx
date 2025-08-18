@@ -28,14 +28,14 @@ export const YouTubeSection: React.FC = () => {
     <section id="videos" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-6 md:mb-16">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Youtube className="w-8 h-8 text-red-600" />
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
               Latest Videos
             </h2>
           </div>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg mb-6">
+          <p className="text-gray-600 max-w-2xl mx-auto text-lg mb-3 md:mb-6">
             Watch our latest lectures, events, and community activities
           </p>
           <Button
@@ -69,7 +69,7 @@ export const YouTubeSection: React.FC = () => {
         {!loading && !error && videos.length > 0 && (
           <>
             {/* Mobile Scroll Hint */}
-            <div className="mb-4 xs:mb-6 text-center md:hidden">
+            <div className="mb-2 xs:mb-4 text-center md:hidden">
               <p className="text-sm text-gray-500">
                 Swipe horizontally to see more videos
               </p>

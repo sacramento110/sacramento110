@@ -43,7 +43,7 @@ export const PrayerTimesSection: React.FC = () => {
     >
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-6 md:mb-16">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Clock className="w-8 h-8 text-islamic-green-600" />
             <h2 className="text-4xl md:text-5xl font-bold islamic-text-gradient">
@@ -55,7 +55,7 @@ export const PrayerTimesSection: React.FC = () => {
           </p>
 
           {/* Date */}
-          <div className="flex items-center justify-center mt-6 text-sm text-gray-500">
+          <div className="flex items-center justify-center mt-3 md:mt-6 text-sm text-gray-500">
             <span>
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'long',
