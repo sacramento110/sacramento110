@@ -69,11 +69,11 @@ export const YouTubeSection: React.FC = () => {
         {!loading && !error && videos.length > 0 && (
           <>
             {/* Videos Horizontal Scroll */}
-            <div className="scroll-container">
+            <div className="scroll-container mobile-scroll">
               {videos.map(video => (
                 <Card
                   key={video.id}
-                  className="flex-shrink-0 w-80 hover:shadow-xl cursor-pointer group transition-all duration-300"
+                  className="flex-shrink-0 w-72 xs:w-80 hover:shadow-xl cursor-pointer group transition-all duration-300 touch-friendly"
                   onClick={() => handleVideoClick(video.videoId)}
                   hover
                 >
@@ -82,35 +82,35 @@ export const YouTubeSection: React.FC = () => {
                     <img
                       src={video.thumbnail}
                       alt={video.title}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-40 xs:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
 
                     {/* Play Button Overlay */}
                     <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-12 h-12 xs:w-16 xs:h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300 touch-friendly">
                         <Play
-                          className="w-8 h-8 text-white ml-1"
+                          className="w-6 h-6 xs:w-8 xs:h-8 text-white ml-1"
                           fill="white"
                         />
                       </div>
                     </div>
 
                     {/* YouTube Logo Badge */}
-                    <div className="absolute top-3 right-3 bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
+                    <div className="absolute top-2 xs:top-3 right-2 xs:right-3 bg-red-600 text-white px-1.5 xs:px-2 py-0.5 xs:py-1 rounded text-xs font-semibold">
                       ▶ YOUTUBE
                     </div>
                   </div>
 
                   {/* Video Info */}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg mb-3 line-clamp-2 text-gray-800 group-hover:text-islamic-green-600 transition-colors leading-tight">
+                  <div className="p-3 xs:p-4">
+                    <h3 className="font-semibold text-base xs:text-lg mb-2 xs:mb-3 line-clamp-2 text-gray-800 group-hover:text-islamic-green-600 transition-colors leading-tight">
                       {video.title}
                     </h3>
 
-                    <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                    <div className="flex items-center justify-between text-xs xs:text-sm text-gray-500 mb-2 xs:mb-3">
                       <span className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-1" />
+                        <Calendar className="w-3 h-3 xs:w-4 xs:h-4 mr-1" />
                         {formatDate(video.publishedAt)}
                       </span>
                     </div>
@@ -124,7 +124,7 @@ export const YouTubeSection: React.FC = () => {
             </div>
 
             {/* Mobile Scroll Hint */}
-            <div className="mt-6 text-center md:hidden">
+            <div className="mt-4 xs:mt-6 text-center md:hidden">
               <p className="text-sm text-gray-500">
                 Swipe horizontally to see more videos
               </p>

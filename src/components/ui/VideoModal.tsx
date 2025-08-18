@@ -39,7 +39,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="aspect-video bg-black rounded-lg overflow-hidden">
+      <div className="aspect-video bg-black rounded-lg overflow-hidden min-h-[200px] xs:min-h-[250px]">
         {isOpen && videoId && (
           <YouTube
             videoId={videoId}

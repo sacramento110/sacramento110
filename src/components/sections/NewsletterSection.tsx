@@ -51,35 +51,36 @@ export const NewsletterSection: React.FC = () => {
       className="py-20 bg-gradient-to-br from-islamic-navy-900 to-islamic-navy-800 text-white"
     >
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xs:gap-12 items-center">
           {/* Newsletter Signup */}
           <div>
-            <div className="flex items-center space-x-2 mb-6">
-              <Mail className="w-8 h-8 text-islamic-gold-400" />
-              <h2 className="text-4xl md:text-5xl font-bold">Stay Connected</h2>
+            <div className="flex items-center space-x-2 mb-4 xs:mb-6">
+              <Mail className="w-6 h-6 xs:w-8 xs:h-8 text-islamic-gold-400" />
+              <h2 className="text-2xl xs:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">Stay Connected</h2>
             </div>
 
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+            <p className="text-base xs:text-lg md:text-xl text-gray-300 mb-6 xs:mb-8 leading-relaxed">
               Subscribe to our weekly newsletter and never miss important
               community updates, event announcements, and spiritual reminders.
             </p>
 
             {!isSubmitted ? (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col xs:flex-row gap-3 xs:gap-4">
                   <input
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="Enter your email address"
-                    className="flex-1 px-4 py-3 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-islamic-gold-500"
+                    className="flex-1 px-4 py-3 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-islamic-gold-500 text-base min-h-[48px]"
                     disabled={isLoading}
                   />
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-islamic-gold-600 hover:bg-islamic-gold-700 text-white px-8 py-3"
+                    className="bg-islamic-gold-600 hover:bg-islamic-gold-700 text-white px-6 xs:px-8 py-3 w-full xs:w-auto"
                     icon={isLoading ? undefined : Send}
+                    size="md"
                   >
                     {isLoading ? 'Subscribing...' : 'Subscribe'}
                   </Button>
@@ -108,8 +109,8 @@ export const NewsletterSection: React.FC = () => {
 
           {/* Social Media */}
           <div>
-            <h3 className="text-3xl font-bold mb-6 text-center">Follow Us</h3>
-            <p className="text-gray-300 text-center mb-8">
+            <h3 className="text-2xl xs:text-3xl font-bold mb-4 xs:mb-6 text-center">Follow Us</h3>
+            <p className="text-gray-300 text-center mb-6 xs:mb-8 text-sm xs:text-base">
               Connect with us on social media for daily updates and community
               highlights
             </p>

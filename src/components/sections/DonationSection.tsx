@@ -30,56 +30,64 @@ export const DonationSection: React.FC = () => {
         </div>
 
         {/* Donation Methods */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 xs:gap-8 max-w-4xl mx-auto mb-8 xs:mb-12">
           {/* Venmo Card */}
-          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Smartphone className="w-8 h-8 text-blue-600" />
+          <Card className="p-6 xs:p-8 text-center hover:shadow-xl transition-all duration-300">
+            <div className="w-12 h-12 xs:w-16 xs:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 xs:mb-6">
+              <Smartphone className="w-6 h-6 xs:w-8 xs:h-8 text-blue-600" />
             </div>
 
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">Venmo</h3>
+            <h3 className="text-xl xs:text-2xl font-bold text-gray-800 mb-3 xs:mb-4">
+              Venmo
+            </h3>
 
-            <div className="mb-6">
+            <div className="mb-4 xs:mb-6 flex justify-center">
               <img
                 src={getImagePath(DONATION_INFO.venmo.qrCode)}
                 alt="Venmo QR Code"
-                className="w-48 h-48 mx-auto rounded-lg shadow-md object-cover"
+                className="max-w-40 max-h-40 xs:max-w-48 xs:max-h-48 w-auto h-auto mx-auto rounded-lg shadow-md object-contain"
                 loading="lazy"
               />
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 xs:space-y-3">
               <div className="flex items-center justify-center space-x-2 text-blue-600">
-                <QrCode className="w-5 h-5" />
-                <span className="font-semibold">Scan QR Code</span>
+                <QrCode className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-semibold text-sm xs:text-base">
+                  Scan QR Code
+                </span>
               </div>
             </div>
           </Card>
 
           {/* Zelle Card */}
-          <Card className="p-8 text-center hover:shadow-xl transition-all duration-300">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CreditCard className="w-8 h-8 text-green-600" />
+          <Card className="p-6 xs:p-8 text-center hover:shadow-xl transition-all duration-300">
+            <div className="w-12 h-12 xs:w-16 xs:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 xs:mb-6">
+              <CreditCard className="w-6 h-6 xs:w-8 xs:h-8 text-green-600" />
             </div>
 
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">Zelle</h3>
+            <h3 className="text-xl xs:text-2xl font-bold text-gray-800 mb-3 xs:mb-4">
+              Zelle
+            </h3>
 
-            <div className="mb-6">
+            <div className="mb-4 xs:mb-6 flex justify-center">
               <img
                 src={getImagePath(DONATION_INFO.zelle.qrCode)}
                 alt="Zelle QR Code"
-                className="w-48 h-48 mx-auto rounded-lg shadow-md object-cover"
+                className="max-w-40 max-h-40 xs:max-w-48 xs:max-h-48 w-auto h-auto mx-auto rounded-lg shadow-md object-contain"
                 loading="lazy"
               />
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 xs:space-y-3">
               <div className="flex items-center justify-center space-x-2 text-green-600">
-                <QrCode className="w-5 h-5" />
-                <span className="font-semibold">Scan QR Code</span>
+                <QrCode className="w-4 h-4 xs:w-5 xs:h-5" />
+                <span className="font-semibold text-sm xs:text-base">
+                  Scan QR Code
+                </span>
               </div>
 
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm xs:text-base">
                 Use your bank's Zelle service to send money
               </p>
             </div>

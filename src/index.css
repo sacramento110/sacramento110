@@ -31,7 +31,7 @@
   }
 
   .prayer-card {
-    @apply islamic-card p-4 text-center transition-all duration-300;
+    @apply islamic-card p-3 xs:p-4 text-center transition-all duration-300;
   }
 
   .prayer-card.active {
@@ -39,21 +39,22 @@
   }
 
   .modal-overlay {
-    @apply fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50;
+    @apply fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-2 xs:p-4 z-50;
   }
 
   .modal-content {
-    @apply bg-white rounded-lg shadow-2xl max-w-4xl w-full relative;
+    @apply bg-white rounded-lg shadow-2xl max-w-4xl w-full h-auto max-h-[90vh] relative overflow-hidden;
   }
 
   .scroll-container {
-    @apply flex gap-4 overflow-x-auto pb-4;
+    @apply flex gap-3 xs:gap-4 overflow-x-auto pb-4;
     scrollbar-width: thin;
     scrollbar-color: #3ba33b #f1f5f9;
+    -webkit-overflow-scrolling: touch;
   }
 
   .scroll-container::-webkit-scrollbar {
-    height: 8px;
+    height: 6px;
   }
 
   .scroll-container::-webkit-scrollbar-track {
@@ -62,6 +63,20 @@
 
   .scroll-container::-webkit-scrollbar-thumb {
     @apply bg-islamic-green-500 rounded-full hover:bg-islamic-green-600;
+  }
+
+  /* Mobile-first touch-friendly improvements */
+  .touch-friendly {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Enhanced mobile scrolling */
+  .mobile-scroll {
+    @apply snap-x snap-mandatory;
+  }
+
+  .mobile-scroll > * {
+    @apply snap-start;
   }
 }
 

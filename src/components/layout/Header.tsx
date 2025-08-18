@@ -24,11 +24,11 @@ export const Header: React.FC = () => {
             <div className="w-10 h-10 bg-islamic-green-600 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-xs">SSMA</span>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-islamic-green-600 hidden sm:block">
+            <div className="hidden xs:block">
+              <h1 className="text-base xs:text-lg font-bold text-islamic-green-600">
                 {SSMA_INFO.shortName}
               </h1>
-              <p className="text-xs text-gray-600 hidden md:block">
+              <p className="text-xs text-gray-600 hidden sm:block">
                 Sacramento, CA
               </p>
             </div>
@@ -83,7 +83,7 @@ export const Header: React.FC = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-gray-700 hover:text-islamic-green-600 transition-colors"
+            className="md:hidden p-2 text-gray-700 hover:text-islamic-green-600 transition-colors touch-friendly"
           >
             {isMenuOpen ? (
               <X className="w-6 h-6" />
@@ -109,32 +109,32 @@ export const Header: React.FC = () => {
 
               <button
                 onClick={() => scrollToSection('hero')}
-                className="text-left py-2 text-gray-700 hover:text-islamic-green-600 transition-colors"
+                className="text-left py-3 text-gray-700 hover:text-islamic-green-600 transition-colors touch-friendly w-full"
               >
                 Home
               </button>
               <button
                 onClick={() => scrollToSection('prayer-times')}
-                className="text-left py-2 text-gray-700 hover:text-islamic-green-600 transition-colors"
+                className="text-left py-3 text-gray-700 hover:text-islamic-green-600 transition-colors touch-friendly w-full"
               >
                 Prayer Times
               </button>
 
               <button
                 onClick={() => scrollToSection('videos')}
-                className="text-left py-2 text-gray-700 hover:text-islamic-green-600 transition-colors"
+                className="text-left py-3 text-gray-700 hover:text-islamic-green-600 transition-colors touch-friendly w-full"
               >
                 Videos
               </button>
               <button
                 onClick={() => scrollToSection('about')}
-                className="text-left py-2 text-gray-700 hover:text-islamic-green-600 transition-colors"
+                className="text-left py-3 text-gray-700 hover:text-islamic-green-600 transition-colors touch-friendly w-full"
               >
                 About
               </button>
               <button
                 onClick={() => scrollToSection('donate')}
-                className="bg-islamic-green-600 text-white px-4 py-3 rounded-lg hover:bg-islamic-green-700 transition-colors flex items-center justify-center space-x-2"
+                className="bg-islamic-green-600 text-white px-4 py-3 rounded-lg hover:bg-islamic-green-700 transition-colors flex items-center justify-center space-x-2 touch-friendly w-full min-h-[48px]"
               >
                 <Heart className="w-4 h-4" />
                 <span>Donate</span>
