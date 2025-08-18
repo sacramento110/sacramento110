@@ -26,7 +26,6 @@ export const fetchYouTubeVideos = async (): Promise<{
 }> => {
   try {
     // First, try to fetch from cache
-
     const cacheResponse = await axios.get(getCacheUrl(), {
       timeout: 5000,
       headers: {
@@ -104,7 +103,6 @@ const extractThumbnailFromDescription = (description: string): string => {
 };
 
 // Mock data for development/fallback
-
 export const getVideoThumbnail = (
   videoId: string,
   quality: 'default' | 'medium' | 'high' | 'maxres' = 'maxres'
