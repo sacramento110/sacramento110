@@ -18,6 +18,16 @@ export const Header: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-lg z-40 border-b border-islamic-gold-200">
       <div className="container mx-auto px-4">
+        {/* Next Prayer Banner - Mobile Only */}
+        {nextPrayer && countdown && (
+          <div className="md:hidden flex items-center justify-center space-x-2 bg-islamic-green-50 py-2 border-b border-islamic-green-200">
+            <Clock className="w-3 h-3 text-islamic-green-600" />
+            <span className="text-xs font-medium text-islamic-green-700 font-mono">
+              Next: {nextPrayer.name} in {countdown}
+            </span>
+          </div>
+        )}
+
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
