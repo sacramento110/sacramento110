@@ -1,7 +1,6 @@
-import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { SSMA_INFO } from '@/utils/constants';
-import { CheckCircle, Mail, Send, Youtube } from 'lucide-react';
+import { Youtube } from 'lucide-react';
 import React, { useState } from 'react';
 
 export const NewsletterSection: React.FC = () => {
@@ -51,9 +50,10 @@ export const NewsletterSection: React.FC = () => {
       className="py-20 bg-gradient-to-br from-islamic-navy-900 to-islamic-navy-800 text-white"
     >
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xs:gap-12 items-center">
-          {/* Newsletter Signup */}
-          <div>
+        {/* TODO: Uncomment when email subscription facility is ready */}
+        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xs:gap-12 items-center"> */}
+        {/* Newsletter Signup - Commented out for future implementation */}
+        {/* <div>
             <div className="flex items-center space-x-2 mb-4 xs:mb-6">
               <Mail className="w-6 h-6 xs:w-8 xs:h-8 text-islamic-gold-400" />
               <h2 className="text-2xl xs:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">Stay Connected</h2>
@@ -105,49 +105,51 @@ export const NewsletterSection: React.FC = () => {
                 </div>
               </Card>
             )}
-          </div>
+          </div> */}
 
-          {/* Social Media */}
-          <div>
-            <h3 className="text-2xl xs:text-3xl font-bold mb-4 xs:mb-6 text-center">Follow Us</h3>
-            <p className="text-gray-300 text-center mb-6 xs:mb-8 text-sm xs:text-base">
-              Connect with us on social media for daily updates and community
-              highlights
-            </p>
+        {/* Social Media - Centered when newsletter is disabled */}
+        <div className="max-w-md mx-auto">
+          <h3 className="text-2xl xs:text-3xl font-bold mb-4 xs:mb-6 text-center">
+            Follow Us
+          </h3>
+          <p className="text-gray-300 text-center mb-6 xs:mb-8 text-sm xs:text-base">
+            Connect with us on social media for daily updates and community
+            highlights
+          </p>
 
-            <div className="space-y-4">
-              {socialMedia.map(platform => (
-                <Card
-                  key={platform.name}
-                  className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 transition-all duration-300"
+          <div className="space-y-4">
+            {socialMedia.map(platform => (
+              <Card
+                key={platform.name}
+                className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 transition-all duration-300"
+              >
+                <a
+                  href={platform.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-6 group"
                 >
-                  <a
-                    href={platform.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-6 group"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className={`w-12 h-12 ${platform.color} rounded-full flex items-center justify-center transition-colors`}
-                      >
-                        <platform.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white group-hover:text-islamic-gold-400 transition-colors">
-                          {platform.name}
-                        </h4>
-                      </div>
+                  <div className="flex items-center space-x-4">
+                    <div
+                      className={`w-12 h-12 ${platform.color} rounded-full flex items-center justify-center transition-colors`}
+                    >
+                      <platform.icon className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-white group-hover:text-islamic-gold-400 transition-colors">
-                      Follow →
+                    <div>
+                      <h4 className="font-semibold text-white group-hover:text-islamic-gold-400 transition-colors">
+                        {platform.name}
+                      </h4>
                     </div>
-                  </a>
-                </Card>
-              ))}
-            </div>
+                  </div>
+                  <div className="text-white group-hover:text-islamic-gold-400 transition-colors">
+                    Follow →
+                  </div>
+                </a>
+              </Card>
+            ))}
           </div>
         </div>
+        {/* </div> */}
       </div>
     </section>
   );
