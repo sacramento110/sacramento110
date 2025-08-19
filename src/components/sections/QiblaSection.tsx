@@ -120,34 +120,6 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
                 </p>
               </div>
             )}
-
-            {/* Additional Info */}
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-              <h4 className="text-sm font-medium text-gray-800 mb-2">
-                📱 How to Use:
-              </h4>
-              <ul className="text-xs text-gray-600 space-y-1">
-                <li>
-                  • Allow location and orientation permissions when prompted
-                </li>
-                <li>• Hold your phone flat (parallel to the ground)</li>
-                <li>• Rotate until the green arrow points to the Kaaba icon</li>
-                <li>• The compass shows live updates as you move</li>
-                <li>
-                  • Green &quot;Perfect Alignment!&quot; means you&apos;re
-                  facing Qibla
-                </li>
-              </ul>
-            </div>
-
-            {/* Disclaimer */}
-            <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-xs text-yellow-800 text-center">
-                <strong>Note:</strong> This is a digital compass tool. For
-                important prayers, consider verifying with traditional methods
-                or consulting your local mosque.
-              </p>
-            </div>
           </div>
         </div>
       </div>
