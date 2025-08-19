@@ -103,7 +103,6 @@ export const getPrayerTimesArray = (prayerTimes: PrayerTimes): PrayerTime[] => {
     { name: 'Dhuhr', time: prayerTimes.dhuhr, icon: PRAYER_ICONS.dhuhr },
     { name: 'Asr', time: prayerTimes.asr, icon: PRAYER_ICONS.asr },
     { name: 'Maghrib', time: prayerTimes.maghrib, icon: PRAYER_ICONS.maghrib },
-    { name: 'Sunset', time: prayerTimes.sunset, icon: PRAYER_ICONS.sunset },
     { name: 'Isha', time: prayerTimes.isha, icon: PRAYER_ICONS.isha },
     {
       name: 'Midnight',
