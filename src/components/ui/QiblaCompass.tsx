@@ -492,10 +492,11 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
                   </li>
                 </ul>
               </div>
-              <div className="p-2 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-xs text-blue-700 text-center">
-                  💡 <strong>Calibration Tip:</strong> Move your phone in a
-                  figure-8 pattern for better accuracy
+
+              {/* Compact Info Banner */}
+              <div className="p-2 bg-islamic-green-50 rounded-lg border border-islamic-green-200">
+                <p className="text-xs text-islamic-green-700 text-center">
+                  🧭 <strong>GPS + Compass:</strong> Precise Kaaba direction
                 </p>
               </div>
             </div>

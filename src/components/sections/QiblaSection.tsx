@@ -94,22 +94,6 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
               </p>
             </div>
 
-            {/* Info Banner */}
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-start space-x-2">
-                <Navigation className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-blue-800 font-medium text-sm">
-                    Accurate Qibla Direction
-                  </p>
-                  <p className="text-blue-700 text-xs mt-1">
-                    This compass uses your device&apos;s GPS and orientation
-                    sensors to show the precise direction to the Kaaba in Mecca.
-                  </p>
-                </div>
-              </div>
-            </div>
-
             {/* Qibla Compass Component */}
             {shouldInitializeQibla ? (
               <QiblaCompass className="w-full" />
