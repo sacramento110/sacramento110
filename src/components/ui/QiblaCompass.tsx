@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ChevronUp,
   Compass,
+  Info,
   MapPin,
   Navigation,
   RefreshCw,
@@ -30,6 +31,7 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
   const [showAlignmentPopup, setShowAlignmentPopup] = useState(false);
   const [prevAligned, setPrevAligned] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [showCardinalTooltip, setShowCardinalTooltip] = useState(false);
 
   // Calculate turn direction and message
   const getTurnDirection = (relativeQiblaDirection: number) => {
@@ -67,6 +69,33 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
         detail: `${degrees}° to go`,
       };
     }
+  };
+
+  // Convert degrees to cardinal direction
+  const getCardinalDirection = (degrees: number) => {
+    const normalizedDegrees = ((degrees % 360) + 360) % 360;
+
+    const directions = [
+      'N',
+      'NNE',
+      'NE',
+      'ENE',
+      'E',
+      'ESE',
+      'SE',
+      'SSE',
+      'S',
+      'SSW',
+      'SW',
+      'WSW',
+      'W',
+      'WNW',
+      'NW',
+      'NNW',
+    ];
+
+    const index = Math.round(normalizedDegrees / 22.5) % 16;
+    return directions[index];
   };
 
   const {
@@ -121,6 +150,21 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
     }
     setPrevAligned(qiblaData?.isAligned || false);
   }, [qiblaData?.isAligned, prevAligned]);
+
+  // Handle click outside to close cardinal tooltip
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showCardinalTooltip) {
+        const target = event.target as Element;
+        if (!target.closest('[data-cardinal-tooltip]')) {
+          setShowCardinalTooltip(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showCardinalTooltip]);
   // Don't render on non-mobile devices
   if (!isMobile) {
     return null;
@@ -248,10 +292,10 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
   if (qiblaData) {
     return (
       <div
-        className={`bg-islamic-green-50 border border-islamic-green-200 rounded-lg p-4 ${className}`}
+        className={`bg-islamic-green-50 border border-islamic-green-200 rounded-lg p-3 sm:p-4 w-full max-w-sm sm:max-w-md mx-auto ${className}`}
       >
         {/* Header */}
-        <div className="text-center mb-4">
+        <div className="text-center mb-3">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Navigation className="w-5 h-5 text-islamic-green-600" />
             <h3 className="text-lg font-semibold text-islamic-green-800">
@@ -264,9 +308,8 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
           </p>
         </div>
 
-        {/* Turn Direction Indicator & Direction Info (above compass) */}
-        <div className="text-center mb-4 space-y-3">
-          {/* Turn Direction Indicator */}
+        {/* Turn Direction Indicator (above compass) */}
+        <div className="text-center mb-3">
           <div
             className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
               qiblaData.isAligned
@@ -292,42 +335,9 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
                 : getTurnDirection(qiblaData.relativeQiblaDirection).detail}
             </span>
           </div>
-
-          {/* Direction Info Grid */}
-          <div className="grid grid-cols-2 gap-3 text-sm max-w-xs mx-auto">
-            <div className="bg-white p-2 rounded-lg border border-gray-200">
-              <span className="text-islamic-green-600 font-medium block text-xs">
-                Qibla Direction
-              </span>
-              <span className="text-lg font-bold text-islamic-green-800">
-                {Math.round(qiblaData.qiblaDirection)}°
-              </span>
-              <span className="text-xs text-gray-500 block">
-                {qiblaData.cardinalDirection}
-              </span>
-            </div>
-            <div className="bg-white p-2 rounded-lg border border-gray-200">
-              <span className="text-islamic-green-600 font-medium block text-xs">
-                Your Heading
-              </span>
-              <span className="text-lg font-bold text-islamic-green-800">
-                {Math.round(qiblaData.currentHeading)}°
-              </span>
-              <div className="flex items-center justify-center mt-1">
-                <div
-                  className={`w-2 h-2 rounded-full mr-1 transition-colors duration-300 ${
-                    calibrationRecommended ? 'bg-orange-400' : 'bg-green-500'
-                  }`}
-                ></div>
-                <span className="text-xs text-gray-500">
-                  {calibrationRecommended ? 'Calibrate' : 'Live'}
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
         {/* Compass Circle */}
-        <div className="relative w-48 h-48 mx-auto mb-4">
+        <div className="relative w-44 h-44 sm:w-48 sm:h-48 mx-auto mb-3">
           {/* Outer circle with fixed markings */}
           <div className="absolute inset-0 rounded-full border-4 border-islamic-green-300">
             {/* Fixed North marker at top */}
@@ -424,6 +434,117 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Direction Info (below compass) - Compact & Responsive */}
+        <div className="text-center mb-3 relative" data-cardinal-tooltip>
+          <div className="inline-flex flex-wrap justify-center items-center gap-3 sm:gap-4 bg-white px-3 sm:px-4 py-2 rounded-full border border-gray-200 text-sm max-w-full">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <span className="text-xs text-islamic-green-600 font-medium">
+                Qibla:
+              </span>
+              <span className="font-bold text-islamic-green-800">
+                {Math.round(qiblaData.qiblaDirection)}°
+                <span className="hidden sm:inline">
+                  {' '}
+                  {qiblaData.cardinalDirection}
+                </span>
+              </span>
+            </div>
+            <div className="w-px h-4 bg-gray-300 hidden sm:block"></div>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <span className="text-xs text-islamic-green-600 font-medium">
+                You:
+              </span>
+              <span className="font-bold text-islamic-green-800">
+                {Math.round(qiblaData.currentHeading)}°
+                <span className="hidden sm:inline">
+                  {' '}
+                  {getCardinalDirection(qiblaData.currentHeading)}
+                </span>
+              </span>
+              <div
+                className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                  calibrationRecommended ? 'bg-orange-400' : 'bg-green-500'
+                }`}
+              ></div>
+            </div>
+            {/* Info tooltip trigger - only on mobile */}
+            <button
+              onClick={() => setShowCardinalTooltip(!showCardinalTooltip)}
+              className="sm:hidden ml-1 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Cardinal directions info"
+            >
+              <Info className="w-3 h-3" />
+            </button>
+          </div>
+
+          {/* Cardinal Directions Tooltip */}
+          {showCardinalTooltip && (
+            <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-xs z-10 max-w-xs w-max">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-gray-800">
+                  Cardinal Directions
+                </h4>
+                <button
+                  onClick={() => setShowCardinalTooltip(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-1 text-gray-600">
+                <div>
+                  <strong>N:</strong> North
+                </div>
+                <div>
+                  <strong>NNE:</strong> North-Northeast
+                </div>
+                <div>
+                  <strong>NE:</strong> Northeast
+                </div>
+                <div>
+                  <strong>ENE:</strong> East-Northeast
+                </div>
+                <div>
+                  <strong>E:</strong> East
+                </div>
+                <div>
+                  <strong>ESE:</strong> East-Southeast
+                </div>
+                <div>
+                  <strong>SE:</strong> Southeast
+                </div>
+                <div>
+                  <strong>SSE:</strong> South-Southeast
+                </div>
+                <div>
+                  <strong>S:</strong> South
+                </div>
+                <div>
+                  <strong>SSW:</strong> South-Southwest
+                </div>
+                <div>
+                  <strong>SW:</strong> Southwest
+                </div>
+                <div>
+                  <strong>WSW:</strong> West-Southwest
+                </div>
+                <div>
+                  <strong>W:</strong> West
+                </div>
+                <div>
+                  <strong>WNW:</strong> West-Northwest
+                </div>
+                <div>
+                  <strong>NW:</strong> Northwest
+                </div>
+                <div>
+                  <strong>NNW:</strong> North-Northwest
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Collapsible Instructions */}
