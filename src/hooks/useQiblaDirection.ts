@@ -1,8 +1,8 @@
 import {
+  needsCalibration,
   requestOrientationPermission,
   supportsDeviceOrientation,
   supportsGeolocation,
-  needsCalibration,
 } from '@/utils/deviceDetection';
 import {
   calculateDistanceToKaaba,

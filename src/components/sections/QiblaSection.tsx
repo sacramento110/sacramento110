@@ -80,6 +80,14 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
       >
         <div className="px-4">
           <div className="border-t border-gray-100 pt-4">
+            {/* Beta Notice */}
+            <div className="mb-3 p-2 bg-orange-100 border border-orange-200 rounded-lg">
+              <p className="text-xs text-orange-700 text-center font-medium">
+                🚧 <strong>Beta Version</strong> - This feature is currently in
+                testing.
+              </p>
+            </div>
+
             {/* Info Banner */}
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-start space-x-2">
