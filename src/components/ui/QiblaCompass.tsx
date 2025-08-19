@@ -30,6 +30,45 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
   const [showAlignmentPopup, setShowAlignmentPopup] = useState(false);
   const [prevAligned, setPrevAligned] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+
+  // Calculate turn direction and message
+  const getTurnDirection = (relativeQiblaDirection: number) => {
+    const degrees = Math.abs(Math.round(relativeQiblaDirection));
+
+    // Determine if should turn left or right
+    // If relative direction is between 0-180°, turn right (clockwise)
+    // If relative direction is between 180-360°, turn left (counter-clockwise)
+    const shouldTurnRight =
+      relativeQiblaDirection > 0 && relativeQiblaDirection <= 180;
+    const direction = shouldTurnRight ? 'right' : 'left';
+    const arrow = shouldTurnRight ? '→' : '←';
+
+    // Choose appropriate message based on how far off
+    if (degrees <= 5) {
+      return { message: '🎯 Almost there!', detail: 'Fine-tune alignment' };
+    } else if (degrees <= 15) {
+      return {
+        message: `${arrow} Turn ${direction} slightly`,
+        detail: `${degrees}° to go`,
+      };
+    } else if (degrees <= 45) {
+      return {
+        message: `${arrow} Turn ${direction}`,
+        detail: `${degrees}° to go`,
+      };
+    } else if (degrees <= 90) {
+      return {
+        message: `${arrow} Turn ${direction} more`,
+        detail: `${degrees}° to go`,
+      };
+    } else {
+      return {
+        message: `${arrow} Keep turning ${direction}`,
+        detail: `${degrees}° to go`,
+      };
+    }
+  };
+
   const {
     qiblaData,
     loading,
@@ -375,12 +414,12 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             <span>
               {qiblaData.isAligned
                 ? '✅ Perfect Alignment!'
-                : '🧭 Keep turning...'}
+                : getTurnDirection(qiblaData.relativeQiblaDirection).message}
             </span>
             <span className="text-xs opacity-75">
               {qiblaData.isAligned
                 ? 'Ready to pray'
-                : `${Math.abs(Math.round(qiblaData.relativeQiblaDirection))}° off`}
+                : getTurnDirection(qiblaData.relativeQiblaDirection).detail}
             </span>
           </div>
         </div>
@@ -422,8 +461,8 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
                     phone
                   </li>
                   <li>
-                    • 📱 <strong>Hold flat and rotate</strong> until green arrow
-                    points up to red arrow
+                    • 📱 <strong>Follow the turn directions</strong>
+                    (left/right) until you see &quot;Perfect Alignment!&quot;
                   </li>
                 </ul>
               </div>
