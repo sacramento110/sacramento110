@@ -4,6 +4,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { usePrayerTimes } from '@/hooks/usePrayerTimes';
 import { Clock, RefreshCw } from 'lucide-react';
 import React from 'react';
+import { QiblaSection } from './QiblaSection';
 
 export const PrayerTimesSection: React.FC = () => {
   const { prayerTimesArray, loading, error, refetch } = usePrayerTimes();
@@ -157,6 +158,11 @@ export const PrayerTimesSection: React.FC = () => {
               </Card>
             ))}
           </div>
+        </div>
+
+        {/* Qibla Direction Finder - Mobile Only, Collapsible */}
+        <div className="mt-8 md:mt-12 max-w-md mx-auto">
+          <QiblaSection />
         </div>
       </div>
     </section>
