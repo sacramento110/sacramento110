@@ -2,14 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useQiblaDirection } from '@/hooks/useQiblaDirection';
 import { isMobileDevice } from '@/utils/deviceDetection';
-import {
-  AlertTriangle,
-  Compass,
-  MapPin,
-  Navigation,
-  RefreshCw,
-  X,
-} from 'lucide-react';
+import { Compass, MapPin, Navigation, RefreshCw } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 export interface QiblaCompassProps {
@@ -33,7 +26,6 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
     requestOrientationPermissionHandler,
     isSupported,
     calibrationRecommended,
-    dismissCalibrationWarning,
   } = useQiblaDirection();
 
   // Check if device is mobile on mount and window resize
@@ -161,29 +153,6 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
       <div
         className={`bg-islamic-green-50 border border-islamic-green-200 rounded-lg p-4 ${className}`}
       >
-        {/* Calibration Warning */}
-        {calibrationRecommended && (
-          <div className="mb-4 p-3 bg-orange-100 border border-orange-200 rounded-lg relative">
-            <button
-              onClick={dismissCalibrationWarning}
-              className="absolute top-2 right-2 text-orange-600 hover:text-orange-800"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <div className="flex items-start space-x-2">
-              <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-orange-800 font-medium text-sm">
-                  Calibration Recommended
-                </p>
-                <p className="text-orange-700 text-xs mt-1">
-                  For better accuracy, calibrate your compass by moving your
-                  phone in a figure-8 pattern.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
         {/* Header */}
         <div className="text-center mb-4">
           <div className="flex items-center justify-center space-x-2 mb-2">
@@ -276,14 +245,8 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </div>
           </div>
 
-          {/* Red needle that shows user direction (fixed to compass container, not rotating face) */}
-          <div
-            className="absolute top-2 left-1/2 transform -translate-x-1/2 transition-transform duration-200 ease-out z-10"
-            style={{
-              transform: `translateX(-50%) rotate(0deg)`,
-              transformOrigin: 'bottom center',
-            }}
-          >
+          {/* Fixed red needle pointing up (shows phone direction relative to North) */}
+          <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
             <div className="w-1 h-16 bg-red-500 rounded-full shadow-lg relative">
               <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
                 <div className="w-3 h-3 bg-red-600 rounded-full border border-white"></div>
@@ -363,11 +326,11 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </p>
             <ul className="text-xs text-gray-600 space-y-1">
               <li>
-                • 🔴 <strong>Red needle:</strong> Always points North (fixed
-                reference)
+                • 🔴 <strong>Red needle:</strong> Fixed, always points North
               </li>
               <li>
-                • 🟢 <strong>Green arrow:</strong> Always points toward Kaaba
+                • 🟢 <strong>Green arrow:</strong> Points to Kaaba, rotates with
+                compass
               </li>
               <li>
                 • 🕋 <strong>Compass face:</strong> Rotates as you turn your
@@ -375,7 +338,7 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
               </li>
               <li>
                 • 📱 <strong>Hold flat and rotate</strong> until green arrow
-                aligns with red needle (both pointing North)
+                points up to red needle
               </li>
             </ul>
           </div>
