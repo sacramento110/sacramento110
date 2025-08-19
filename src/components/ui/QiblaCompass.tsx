@@ -21,7 +21,8 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
 }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [hasInitialized, setHasInitialized] = useState(false);
-  const {
+  const [showAlignmentPopup, setShowAlignmentPopup] = useState(false);
+  const [prevAligned, setPrevAligned] = useState(false);  const {
     qiblaData,
     loading,
     error,
@@ -62,6 +63,18 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
     requestOrientationPermissionHandler,
   ]);
 
+  // Handle alignment popup
+  useEffect(() => {
+    if (qiblaData?.isAligned && !prevAligned) {
+      // User just aligned with Qibla
+      setShowAlignmentPopup(true);
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        setShowAlignmentPopup(false);
+      }, 3000);
+    }
+    setPrevAligned(qiblaData?.isAligned || false);
+  }, [qiblaData?.isAligned, prevAligned]);
   // Don't render on non-mobile devices
   if (!isMobile) {
     return null;
@@ -264,8 +277,14 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </div>
           </div>
 
-          {/* Fixed red needle pointing up (shows phone direction relative to North) */}
-          <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
+          {/* Red needle that shows user direction (rotates with phone) */}
+          <div
+            className="absolute top-2 left-1/2 transform -translate-x-1/2 transition-transform duration-200 ease-out"
+            style={{
+              transform: `translateX(-50%) rotate(${-qiblaData.currentHeading}deg)`,
+              transformOrigin: "bottom center",
+            }}
+          >
             <div className="w-1 h-16 bg-red-500 rounded-full shadow-lg relative">
               <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
                 <div className="w-3 h-3 bg-red-600 rounded-full border border-white"></div>
@@ -347,19 +366,16 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </p>
             <ul className="text-xs text-gray-600 space-y-1">
               <li>
-                • 🔴 <strong>Red needle:</strong> Fixed, always points North
+                • 🔴 <strong>Red needle:</strong> Shows your current direction
               </li>
               <li>
-                • 🟢 <strong>Green arrow:</strong> Points to Kaaba, rotates with
-                compass
-              </li>
-              <li>
+                • 🟢 <strong>Green arrow:</strong> Always points toward Kaaba              <li>
                 • 🕋 <strong>Compass face:</strong> Rotates as you turn your
                 phone
               </li>
               <li>
                 • 📱 <strong>Hold flat and rotate</strong> until green arrow
-                points up to red needle
+                points in the same direction as the red needle
               </li>
             </ul>
           </div>
@@ -370,7 +386,25 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </p>
           </div>
         </div>
-      </div>
+
+        {/* Alignment Success Popup */}
+        {showAlignmentPopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white rounded-lg shadow-2xl p-6 max-w-sm mx-4 text-center transform animate-bounce">
+              <div className="text-6xl mb-4">🕋</div>
+              <h3 className="text-xl font-bold text-islamic-green-600 mb-2">
+                Perfect Alignment!
+              </h3>
+              <p className="text-gray-700 mb-4">
+                You are now facing the Kaaba direction
+              </p>
+              <div className="text-2xl">🙏</div>
+              <p className="text-sm text-gray-500 mt-2">
+                Ready for prayer
+              </p>
+            </div>
+          </div>
+        )}      </div>
     );
   }
 

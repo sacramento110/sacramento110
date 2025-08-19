@@ -67,10 +67,7 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
             </p>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-xs bg-islamic-green-100 text-islamic-green-700 px-2 py-1 rounded-full font-medium">
-            Mobile Only
-          </span>
+        <div className="flex items-center">
           {isExpanded ? (
             <ChevronUp className="w-5 h-5 text-gray-400" />
           ) : (
