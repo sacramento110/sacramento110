@@ -41,11 +41,7 @@ const UPDATE_THROTTLE = 50; // Update every 50ms for smooth animation
 const MIN_COMPASS_ACCURACY = 15; // Minimum accuracy threshold in degrees
 
 // Type for extended DeviceOrientationEvent
-interface ExtendedDeviceOrientationEvent {
-  alpha: number | null;
-  beta: number | null;
-  gamma: number | null;
-  absolute: boolean;
+interface ExtendedDeviceOrientationEvent extends DeviceOrientationEvent {
   webkitCompassHeading?: number;
   webkitCompassAccuracy?: number;
   accuracy?: number;
@@ -184,8 +180,17 @@ export const useQiblaDirection = (): QiblaHookReturn => {
           accuracy = eventWithCompass.webkitCompassAccuracy ?? null;
         } else if (event.alpha !== null) {
           // Standard implementation for Android and other devices
-          // For most devices, use alpha directly as compass heading
           heading = event.alpha;
+
+          // For Android devices, we might need to invert the alpha value
+          // depending on browser implementation
+          const userAgent = navigator.userAgent.toLowerCase();
+          if (userAgent.includes('android')) {
+            // Some Android browsers need alpha inversion for proper compass behavior
+            if (!eventWithCompass.absolute) {
+              heading = 360 - heading;
+            }
+          }
 
           // Try to get accuracy from Android-specific properties
           if (eventWithCompass.absolute && eventWithCompass.accuracy) {

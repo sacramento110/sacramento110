@@ -52,20 +52,90 @@ export const requestOrientationPermission = async (): Promise<boolean> => {
   }
 
   // Check if DeviceOrientationEvent.requestPermission exists (iOS 13+)
-  if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+  if (
+    typeof (
+      DeviceOrientationEvent as unknown as {
+        requestPermission?: () => Promise<string>;
+      }
+    ).requestPermission === 'function'
+  ) {
     try {
       const permission = await (
-        DeviceOrientationEvent as any
+        DeviceOrientationEvent as unknown as {
+          requestPermission: () => Promise<string>;
+        }
       ).requestPermission();
       return permission === 'granted';
-    } catch (error) {
-      // Silently fail if permission request fails
+    } catch {
       return false;
     }
   }
 
-  // For other devices, assume permission is granted if the API exists
-  return supportsDeviceOrientation();
+  // For Android and other devices, test if orientation events actually work
+  if (supportsDeviceOrientation()) {
+    // Test if we can actually receive orientation events
+    return new Promise(resolve => {
+      const timeout = setTimeout(() => {
+        window.removeEventListener('deviceorientation', testHandler);
+        resolve(false);
+      }, 2000);
+
+      const testHandler = (event: DeviceOrientationEvent) => {
+        if (
+          event.alpha !== null ||
+          event.beta !== null ||
+          event.gamma !== null
+        ) {
+          window.removeEventListener('deviceorientation', testHandler);
+          clearTimeout(timeout);
+          resolve(true);
+        }
+      };
+
+      window.addEventListener('deviceorientation', testHandler, {
+        passive: true,
+      });
+    });
+  }
+
+  return false;
+};
+
+/**
+ * Check if device is iOS
+ */
+export const isIOS = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+};
+
+/**
+ * Check if device is Android
+ */
+export const isAndroid = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return /Android/.test(navigator.userAgent);
+};
+
+/**
+ * Get iOS version number
+ */
+export const getIOSVersion = (): number | null => {
+  if (!isIOS()) return null;
+
+  const match = navigator.userAgent.match(/OS (\d+)_(\d+)_?(\d+)?/);
+  if (match) {
+    return parseInt(match[1], 10);
+  }
+  return null;
+};
+
+/**
+ * Check if device requires device orientation permission (iOS 13+)
+ */
+export const requiresOrientationPermission = (): boolean => {
+  const iosVersion = getIOSVersion();
+  return isIOS() && iosVersion !== null && iosVersion >= 13;
 };
 
 /**

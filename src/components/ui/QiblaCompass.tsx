@@ -1,8 +1,21 @@
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useQiblaDirection } from '@/hooks/useQiblaDirection';
-import { isMobileDevice } from '@/utils/deviceDetection';
-import { Compass, MapPin, Navigation, RefreshCw } from 'lucide-react';
+import {
+  getDeviceType,
+  isAndroid,
+  isIOS,
+  isMobileDevice,
+  requiresOrientationPermission,
+} from '@/utils/deviceDetection';
+import {
+  ChevronDown,
+  ChevronUp,
+  Compass,
+  MapPin,
+  Navigation,
+  RefreshCw,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 export interface QiblaCompassProps {
@@ -16,6 +29,7 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
   const [hasInitialized, setHasInitialized] = useState(false);
   const [showAlignmentPopup, setShowAlignmentPopup] = useState(false);
   const [prevAligned, setPrevAligned] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
   const {
     qiblaData,
     loading,
@@ -75,13 +89,28 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
 
   // Don't render if not supported
   if (!isSupported) {
+    const deviceType = getDeviceType();
+    const isIOSDevice = isIOS();
+    const isAndroidDevice = isAndroid();
+
     return (
       <div
         className={`bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}
       >
-        <p className="text-red-600 text-sm text-center">
-          Qibla compass requires location and orientation sensors
-        </p>
+        <div className="text-center">
+          <p className="text-red-600 text-sm mb-2">
+            Qibla compass is not supported on this device
+          </p>
+          <p className="text-red-500 text-xs">
+            {isIOSDevice &&
+              "iOS device detected: Please ensure you're using Safari browser"}
+            {isAndroidDevice &&
+              'Android device detected: Please ensure location and sensor permissions are enabled'}
+            {!isIOSDevice &&
+              !isAndroidDevice &&
+              `${deviceType}: This feature requires a mobile device with orientation sensors`}
+          </p>
+        </div>
       </div>
     );
   }
@@ -104,12 +133,41 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
 
   // Show error state with retry options
   if (error) {
+    const isIOSDevice = isIOS();
+    const isAndroidDevice = isAndroid();
+    const needsPermission = requiresOrientationPermission();
+
     return (
       <div
         className={`bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}
       >
         <div className="text-center">
           <p className="text-red-600 text-sm mb-3">{error}</p>
+
+          {/* Device-specific help text */}
+          <div className="mb-3 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-700 text-xs">
+              {isIOSDevice && needsPermission && (
+                <>
+                  <strong>iPhone/iPad:</strong> Tap &quot;Enable Compass&quot;
+                  below and allow motion &amp; orientation access in the popup.
+                </>
+              )}
+              {isIOSDevice && !needsPermission && (
+                <>
+                  <strong>iPhone/iPad:</strong> Make sure you&apos;re using
+                  Safari browser for best compatibility.
+                </>
+              )}
+              {isAndroidDevice && (
+                <>
+                  <strong>Android:</strong> Enable location permission and
+                  ensure your device has a magnetometer sensor.
+                </>
+              )}
+            </p>
+          </div>
+
           <div className="flex flex-col gap-2">
             {!hasLocationPermission && (
               <Button
@@ -139,7 +197,7 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
               size="sm"
               icon={RefreshCw}
             >
-              Retry
+              Retry Setup
             </Button>
           </div>
         </div>
@@ -326,35 +384,56 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </span>
           </div>
         </div>
-        {/* Instructions */}
+        {/* Collapsible Instructions */}
         <div className="mt-4 space-y-2">
-          <div className="p-3 bg-white rounded-lg border-l-4 border-islamic-green-500">
-            <p className="text-xs text-gray-700 text-center font-medium mb-1">
-              🧭 How to use this compass:
+          {/* Instructions Header (Clickable) */}
+          <button
+            onClick={() => setShowInstructions(!showInstructions)}
+            className="w-full p-3 bg-white rounded-lg border-l-4 border-islamic-green-500 hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between"
+          >
+            <p className="text-xs text-gray-700 font-medium">
+              🧭 How to use this compass
             </p>
-            <ul className="text-xs text-gray-600 space-y-1">
-              <li>
-                • 🔴 <strong>Red arrow:</strong> Fixed, always points North
-              </li>
-              <li>
-                • 🟢 <strong>Green arrow:</strong> Points to Kaaba, rotates with
-                compass
-              </li>
-              <li>
-                • 🕋 <strong>Compass face:</strong> Rotates as you turn your
-                phone
-              </li>
-              <li>
-                • 📱 <strong>Hold flat and rotate</strong> until green arrow
-                points up to red arrow
-              </li>
-            </ul>
-          </div>
-          <div className="p-2 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-xs text-blue-700 text-center">
-              💡 <strong>Calibration Tip:</strong> Move your phone in a figure-8
-              pattern for better accuracy
-            </p>
+            {showInstructions ? (
+              <ChevronUp className="w-4 h-4 text-gray-400" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-gray-400" />
+            )}
+          </button>
+
+          {/* Collapsible Instructions Content */}
+          <div
+            className={`transition-all duration-300 ease-in-out overflow-hidden ${
+              showInstructions ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+            }`}
+          >
+            <div className="space-y-2">
+              <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <ul className="text-xs text-gray-600 space-y-1">
+                  <li>
+                    • 🔴 <strong>Red arrow:</strong> Fixed, always points North
+                  </li>
+                  <li>
+                    • 🟢 <strong>Green arrow:</strong> Points to Kaaba, rotates
+                    with compass
+                  </li>
+                  <li>
+                    • 🕋 <strong>Compass face:</strong> Rotates as you turn your
+                    phone
+                  </li>
+                  <li>
+                    • 📱 <strong>Hold flat and rotate</strong> until green arrow
+                    points up to red arrow
+                  </li>
+                </ul>
+              </div>
+              <div className="p-2 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-xs text-blue-700 text-center">
+                  💡 <strong>Calibration Tip:</strong> Move your phone in a
+                  figure-8 pattern for better accuracy
+                </p>
+              </div>
+            </div>
           </div>
         </div>
         {/* Alignment Success Popup */}
