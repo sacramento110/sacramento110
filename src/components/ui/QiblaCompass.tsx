@@ -213,24 +213,20 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
                 transform: `translateX(-50%) rotate(${qiblaData.qiblaDirection}deg)`,
               }}
             >
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1">
+              {/* Green arrow pointing to Kaaba */}
+              <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
                 <div
-                  className={`w-4 h-4 rounded-full shadow-lg border-2 border-white transition-colors duration-300 ${
+                  className={`w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent transition-colors duration-300 shadow-lg ${
                     qiblaData.isAligned
-                      ? 'bg-green-500 animate-pulse'
-                      : 'bg-islamic-green-600'
+                      ? 'border-b-green-500 drop-shadow-lg'
+                      : 'border-b-islamic-green-600'
                   }`}
+                  style={{
+                    filter: qiblaData.isAligned
+                      ? 'drop-shadow(0 0 8px rgba(34, 197, 94, 0.6))'
+                      : '',
+                  }}
                 ></div>
-                {/* Arrow tip pointing to Kaaba */}
-                <div className="absolute top-1 left-1/2 transform -translate-x-1/2">
-                  <div
-                    className={`w-0 h-0 border-l-2 border-r-2 border-b-4 border-l-transparent border-r-transparent transition-colors duration-300 ${
-                      qiblaData.isAligned
-                        ? 'border-b-green-500'
-                        : 'border-b-islamic-green-600'
-                    }`}
-                  ></div>
-                </div>
               </div>
             </div>
 
@@ -245,14 +241,26 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </div>
           </div>
 
-          {/* Fixed red needle pointing up (shows phone direction relative to North) */}
+          {/* Fixed red arrow pointing up (shows phone direction relative to North) */}
           <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
             <div className="w-1 h-16 bg-red-500 rounded-full shadow-lg relative">
-              <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
-                <div className="w-3 h-3 bg-red-600 rounded-full border border-white"></div>
+              {/* Red arrow pointing up */}
+              <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                <div
+                  className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-red-600 shadow-lg"
+                  style={{
+                    filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+                  }}
+                ></div>
               </div>
-              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+              {/* Red arrow pointing down */}
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                <div
+                  className="w-0 h-0 border-l-2 border-r-2 border-t-4 border-l-transparent border-r-transparent border-t-red-400 shadow-lg"
+                  style={{
+                    filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+                  }}
+                ></div>
               </div>
             </div>
           </div>
@@ -326,7 +334,7 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </p>
             <ul className="text-xs text-gray-600 space-y-1">
               <li>
-                • 🔴 <strong>Red needle:</strong> Fixed, always points North
+                • 🔴 <strong>Red arrow:</strong> Fixed, always points North
               </li>
               <li>
                 • 🟢 <strong>Green arrow:</strong> Points to Kaaba, rotates with
@@ -338,7 +346,7 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
               </li>
               <li>
                 • 📱 <strong>Hold flat and rotate</strong> until green arrow
-                points up to red needle
+                points up to red arrow
               </li>
             </ul>
           </div>
