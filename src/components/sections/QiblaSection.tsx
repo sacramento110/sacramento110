@@ -78,8 +78,10 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
 
       {/* Collapsible Content */}
       <div
-        className={`transition-all duration-300 ease-in-out overflow-hidden ${
-          isExpanded ? 'max-h-[1000px] opacity-100 pb-4' : 'max-h-0 opacity-0'
+        className={`transition-all duration-300 ease-in-out ${
+          isExpanded
+            ? 'max-h-[1000px] opacity-100 pb-8 overflow-visible'
+            : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
         <div className="px-4">

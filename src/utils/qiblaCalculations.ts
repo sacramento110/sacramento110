@@ -69,13 +69,19 @@ export const calculateDistanceToKaaba = (
 };
 
 /**
- * Format distance for display
+ * Format distance for display in miles
  */
 export const formatDistance = (distance: number): string => {
-  if (distance < 1) {
-    return `${Math.round(distance * 1000)} m`;
+  // Convert kilometers to miles (1 km = 0.621371 miles)
+  const miles = distance * 0.621371;
+
+  if (miles < 1) {
+    // For very short distances, show in feet (1 mile = 5280 feet)
+    return `${Math.round(miles * 5280)} ft`;
   }
-  return `${Math.round(distance)} km`;
+
+  // Round to nearest whole mile for distances over 1 mile
+  return `${Math.round(miles).toLocaleString()} miles`;
 };
 
 /**
