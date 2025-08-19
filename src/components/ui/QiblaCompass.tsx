@@ -276,11 +276,11 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </div>
           </div>
 
-          {/* Red needle that shows user direction (rotates with phone) */}
+          {/* Red needle that shows user direction (fixed to compass container, not rotating face) */}
           <div
-            className="absolute top-2 left-1/2 transform -translate-x-1/2 transition-transform duration-200 ease-out"
+            className="absolute top-2 left-1/2 transform -translate-x-1/2 transition-transform duration-200 ease-out z-10"
             style={{
-              transform: `translateX(-50%) rotate(${-qiblaData.currentHeading}deg)`,
+              transform: `translateX(-50%) rotate(0deg)`,
               transformOrigin: 'bottom center',
             }}
           >
@@ -363,7 +363,8 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             </p>
             <ul className="text-xs text-gray-600 space-y-1">
               <li>
-                • 🔴 <strong>Red needle:</strong> Shows your current direction
+                • 🔴 <strong>Red needle:</strong> Always points North (fixed
+                reference)
               </li>
               <li>
                 • 🟢 <strong>Green arrow:</strong> Always points toward Kaaba
@@ -374,7 +375,7 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
               </li>
               <li>
                 • 📱 <strong>Hold flat and rotate</strong> until green arrow
-                points in the same direction as the red needle
+                aligns with red needle (both pointing North)
               </li>
             </ul>
           </div>
