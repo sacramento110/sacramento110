@@ -13,6 +13,7 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
 }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [shouldInitializeQibla, setShouldInitializeQibla] = useState(false);
 
   // Check if device is mobile on mount and window resize
   useEffect(() => {
@@ -34,7 +35,13 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
   }
 
   const toggleExpansion = () => {
-    setIsExpanded(!isExpanded);
+    const newExpandedState = !isExpanded;
+    setIsExpanded(newExpandedState);
+
+    // Only initialize Qibla when user expands the section for the first time
+    if (newExpandedState && !shouldInitializeQibla) {
+      setShouldInitializeQibla(true);
+    }
   };
 
   return (
@@ -97,15 +104,25 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
                     Accurate Qibla Direction
                   </p>
                   <p className="text-blue-700 text-xs mt-1">
-                    This compass uses your device's GPS and orientation sensors
-                    to show the precise direction to the Kaaba in Mecca.
+                    This compass uses your device&apos;s GPS and orientation
+                    sensors to show the precise direction to the Kaaba in Mecca.
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Qibla Compass Component */}
-            <QiblaCompass className="w-full" />
+            {shouldInitializeQibla ? (
+              <QiblaCompass className="w-full" />
+            ) : (
+              <div className="w-full p-8 text-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <Navigation className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-600 font-medium">Qibla Compass Ready</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  The compass will initialize when you first expand this section
+                </p>
+              </div>
+            )}
 
             {/* Additional Info */}
             <div className="mt-4 p-3 bg-gray-50 rounded-lg">
@@ -119,7 +136,10 @@ export const QiblaSection: React.FC<QiblaSectionProps> = ({
                 <li>• Hold your phone flat (parallel to the ground)</li>
                 <li>• Rotate until the green arrow points to the Kaaba icon</li>
                 <li>• The compass shows live updates as you move</li>
-                <li>• Green "Perfect Alignment!" means you're facing Qibla</li>
+                <li>
+                  • Green &quot;Perfect Alignment!&quot; means you&apos;re
+                  facing Qibla
+                </li>
               </ul>
             </div>
 

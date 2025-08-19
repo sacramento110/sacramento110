@@ -20,6 +20,7 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
   className = '',
 }) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
   const {
     qiblaData,
     loading,
@@ -46,6 +47,20 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
       window.removeEventListener('resize', checkMobile);
     };
   }, []);
+
+  // Auto-request permissions when component mounts
+  useEffect(() => {
+    if (isSupported && !hasInitialized) {
+      setHasInitialized(true);
+      requestLocationPermission();
+      requestOrientationPermissionHandler();
+    }
+  }, [
+    isSupported,
+    hasInitialized,
+    requestLocationPermission,
+    requestOrientationPermissionHandler,
+  ]);
 
   // Don't render on non-mobile devices
   if (!isMobile) {
@@ -172,49 +187,68 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
 
         {/* Compass Circle */}
         <div className="relative w-48 h-48 mx-auto mb-4">
-          {/* Outer circle with markings */}
+          {/* Outer circle with fixed markings */}
           <div className="absolute inset-0 rounded-full border-4 border-islamic-green-300">
-            {/* Cardinal direction markers */}
+            {/* Fixed North marker at top */}
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
-              <span className="text-xs font-semibold text-islamic-green-700">
+              <span className="text-xs font-semibold text-red-600 bg-white px-1 rounded">
                 N
-              </span>
-            </div>
-            <div className="absolute right-0 top-1/2 transform translate-x-2 -translate-y-1/2">
-              <span className="text-xs font-semibold text-islamic-green-700">
-                E
-              </span>
-            </div>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-2">
-              <span className="text-xs font-semibold text-islamic-green-700">
-                S
-              </span>
-            </div>
-            <div className="absolute left-0 top-1/2 transform -translate-x-2 -translate-y-1/2">
-              <span className="text-xs font-semibold text-islamic-green-700">
-                W
               </span>
             </div>
           </div>
 
-          {/* Inner compass face */}
-          <div className="absolute inset-2 rounded-full bg-white shadow-inner">
-            {/* Qibla direction indicator */}
+          {/* Rotating compass face that moves with device orientation */}
+          <div
+            className="absolute inset-2 rounded-full bg-white shadow-inner transition-transform duration-200 ease-out"
+            style={{
+              transform: `rotate(${-qiblaData.currentHeading}deg)`,
+            }}
+          >
+            {/* Compass rose markings that rotate with device */}
+            <div className="absolute inset-0">
+              {/* Cardinal direction markers */}
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1">
+                <span className="text-xs font-semibold text-gray-700">N</span>
+              </div>
+              <div className="absolute right-0 top-1/2 transform translate-x-1 -translate-y-1/2">
+                <span className="text-xs font-semibold text-gray-700">E</span>
+              </div>
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1">
+                <span className="text-xs font-semibold text-gray-700">S</span>
+              </div>
+              <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2">
+                <span className="text-xs font-semibold text-gray-700">W</span>
+              </div>
+            </div>
+
+            {/* Fixed Qibla direction indicator (always points to actual Qibla direction) */}
             <div
-              className="absolute w-1 bg-islamic-green-600 transform -translate-x-1/2 transition-transform duration-100 ease-out"
+              className="absolute w-1 bg-islamic-green-600 transform -translate-x-1/2 transition-colors duration-300"
               style={{
                 height: '40%',
                 left: '50%',
                 top: '10%',
                 transformOrigin: 'bottom center',
-                transform: `translateX(-50%) rotate(${qiblaData.relativeQiblaDirection}deg)`,
+                transform: `translateX(-50%) rotate(${qiblaData.qiblaDirection}deg)`,
               }}
             >
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1">
-                <div className="w-4 h-4 bg-islamic-green-600 rounded-full shadow-lg border-2 border-white"></div>
-                {/* Arrow tip for better visibility */}
+                <div
+                  className={`w-4 h-4 rounded-full shadow-lg border-2 border-white transition-colors duration-300 ${
+                    qiblaData.isAligned
+                      ? 'bg-green-500 animate-pulse'
+                      : 'bg-islamic-green-600'
+                  }`}
+                ></div>
+                {/* Arrow tip pointing to Kaaba */}
                 <div className="absolute top-1 left-1/2 transform -translate-x-1/2">
-                  <div className="w-0 h-0 border-l-2 border-r-2 border-b-4 border-l-transparent border-r-transparent border-b-islamic-green-600"></div>
+                  <div
+                    className={`w-0 h-0 border-l-2 border-r-2 border-b-4 border-l-transparent border-r-transparent transition-colors duration-300 ${
+                      qiblaData.isAligned
+                        ? 'border-b-green-500'
+                        : 'border-b-islamic-green-600'
+                    }`}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -227,6 +261,18 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
             {/* Kaaba icon in center */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <span className="text-lg">🕋</span>
+            </div>
+          </div>
+
+          {/* Fixed red needle pointing up (shows phone direction relative to North) */}
+          <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
+            <div className="w-1 h-16 bg-red-500 rounded-full shadow-lg relative">
+              <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
+                <div className="w-3 h-3 bg-red-600 rounded-full border border-white"></div>
+              </div>
+              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
+                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -252,7 +298,16 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
               <span className="text-lg font-bold text-islamic-green-800">
                 {Math.round(qiblaData.currentHeading)}°
               </span>
-              <span className="text-xs text-gray-500 block">Live compass</span>
+              <div className="flex items-center justify-center mt-1">
+                <div
+                  className={`w-2 h-2 rounded-full mr-1 transition-colors duration-300 ${
+                    calibrationRecommended ? 'bg-orange-400' : 'bg-green-500'
+                  }`}
+                ></div>
+                <span className="text-xs text-gray-500">
+                  {calibrationRecommended ? 'Calibrate' : 'Live'}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -286,15 +341,32 @@ export const QiblaCompass: React.FC<QiblaCompassProps> = ({
 
         {/* Instructions */}
         <div className="mt-4 space-y-2">
-          <div className="p-3 bg-white rounded-lg">
-            <p className="text-xs text-gray-600 text-center font-medium">
-              📱 Hold phone flat and rotate until green arrow points to Kaaba
+          <div className="p-3 bg-white rounded-lg border-l-4 border-islamic-green-500">
+            <p className="text-xs text-gray-700 text-center font-medium mb-1">
+              🧭 How to use this compass:
             </p>
+            <ul className="text-xs text-gray-600 space-y-1">
+              <li>
+                • 🔴 <strong>Red needle:</strong> Fixed, always points North
+              </li>
+              <li>
+                • 🟢 <strong>Green arrow:</strong> Points to Kaaba, rotates with
+                compass
+              </li>
+              <li>
+                • 🕋 <strong>Compass face:</strong> Rotates as you turn your
+                phone
+              </li>
+              <li>
+                • 📱 <strong>Hold flat and rotate</strong> until green arrow
+                points up to red needle
+              </li>
+            </ul>
           </div>
           <div className="p-2 bg-blue-50 rounded-lg border border-blue-200">
             <p className="text-xs text-blue-700 text-center">
-              💡 <strong>Tip:</strong> For better accuracy, calibrate your
-              compass by moving your phone in a figure-8 pattern
+              💡 <strong>Calibration Tip:</strong> Move your phone in a figure-8
+              pattern for better accuracy
             </p>
           </div>
         </div>

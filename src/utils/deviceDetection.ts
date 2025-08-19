@@ -46,6 +46,11 @@ export const supportsGeolocation = (): boolean => {
 export const requestOrientationPermission = async (): Promise<boolean> => {
   if (typeof window === 'undefined') return false;
 
+  // Check if page is served over HTTPS (required for device orientation)
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    return false;
+  }
+
   // Check if DeviceOrientationEvent.requestPermission exists (iOS 13+)
   if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
     try {

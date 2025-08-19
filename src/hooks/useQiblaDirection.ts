@@ -35,8 +35,21 @@ export interface QiblaHookReturn {
   dismissCalibrationWarning: () => void;
 }
 
-const QIBLA_TOLERANCE = 3; // Degrees tolerance for "aligned" state (more precise)
-const SMOOTHING_FACTOR = 0.8; // For heading smoothing (0 = no smoothing, 1 = max smoothing)
+const QIBLA_TOLERANCE = 5; // Degrees tolerance for "aligned" state (more precise)
+const SMOOTHING_FACTOR = 0.7; // For heading smoothing (0 = no smoothing, 1 = max smoothing)
+const UPDATE_THROTTLE = 50; // Update every 50ms for smooth animation
+const MIN_COMPASS_ACCURACY = 15; // Minimum accuracy threshold in degrees
+
+// Type for extended DeviceOrientationEvent
+interface ExtendedDeviceOrientationEvent {
+  alpha: number | null;
+  beta: number | null;
+  gamma: number | null;
+  absolute: boolean;
+  webkitCompassHeading?: number;
+  webkitCompassAccuracy?: number;
+  accuracy?: number;
+}
 
 export const useQiblaDirection = (): QiblaHookReturn => {
   const [qiblaData, setQiblaData] = useState<QiblaData | null>(null);
@@ -52,6 +65,8 @@ export const useQiblaDirection = (): QiblaHookReturn => {
   const [currentHeading, setCurrentHeading] = useState<number>(0);
   const [, setHeadingReadings] = useState<number[]>([]);
   const [calibrationRecommended, setCalibrationRecommended] = useState(false);
+  const [, setCompassAccuracy] = useState<number | null>(null);
+  const [lastOrientationUpdate, setLastOrientationUpdate] = useState(0);
 
   // Check if the device supports required features
   const isSupported = supportsGeolocation() && supportsDeviceOrientation();
@@ -146,31 +161,45 @@ export const useQiblaDirection = (): QiblaHookReturn => {
 
   // Handle device orientation changes with enhanced accuracy
   useEffect(() => {
-    if (!hasOrientationPermission || !supportsDeviceOrientation()) return;
-
-    let lastUpdateTime = 0;
-    const UPDATE_THROTTLE = 50; // Update every 50ms for smooth animation
+    if (!hasOrientationPermission || !supportsDeviceOrientation()) {
+      return;
+    }
 
     const handleOrientation = (event: DeviceOrientationEvent) => {
       const now = Date.now();
-      if (now - lastUpdateTime < UPDATE_THROTTLE) return;
-      lastUpdateTime = now;
+      if (now - lastOrientationUpdate < UPDATE_THROTTLE) return;
+
+      setLastOrientationUpdate(now);
 
       if (event.alpha !== null) {
         let heading = event.alpha;
+        let accuracy: number | null = null;
 
-        // Handle different browser implementations
-        // Some browsers provide compass heading, others provide arbitrary rotation
-        if ((event as any).webkitCompassHeading !== undefined) {
+        // Handle different browser implementations and device types
+        const eventWithCompass = event as ExtendedDeviceOrientationEvent;
+
+        if (eventWithCompass.webkitCompassHeading !== undefined) {
           // iOS Safari provides webkitCompassHeading which is more accurate
-          heading = (event as any).webkitCompassHeading;
+          heading = eventWithCompass.webkitCompassHeading;
+          accuracy = eventWithCompass.webkitCompassAccuracy ?? null;
         } else if (event.alpha !== null) {
-          // Standard implementation
-          heading = 360 - event.alpha; // Invert for proper compass direction
+          // Standard implementation for Android and other devices
+          // For most devices, use alpha directly as compass heading
+          heading = event.alpha;
+
+          // Try to get accuracy from Android-specific properties
+          if (eventWithCompass.absolute && eventWithCompass.accuracy) {
+            accuracy = eventWithCompass.accuracy;
+          }
         }
 
         // Normalize to 0-360 degrees
         heading = ((heading % 360) + 360) % 360;
+
+        // Store compass accuracy if available
+        if (accuracy !== null) {
+          setCompassAccuracy(accuracy);
+        }
 
         // Apply smoothing for more stable readings
         const smoothedHeading = smoothHeading(heading, currentHeading);
@@ -180,9 +209,12 @@ export const useQiblaDirection = (): QiblaHookReturn => {
         setHeadingReadings(prev => {
           const newReadings = [...prev, smoothedHeading].slice(-20); // Keep last 20 readings
 
-          // Check if calibration is needed every 10 readings
+          // Check if calibration is needed based on accuracy and stability
           if (newReadings.length >= 15 && !calibrationRecommended) {
-            if (needsCalibration(newReadings)) {
+            const needsCalib =
+              needsCalibration(newReadings) ||
+              (accuracy !== null && Math.abs(accuracy) > MIN_COMPASS_ACCURACY);
+            if (needsCalib) {
               setCalibrationRecommended(true);
             }
           }
@@ -197,37 +229,64 @@ export const useQiblaDirection = (): QiblaHookReturn => {
       passive: true,
     });
 
+    // Also try deviceorientationabsolute for some Android devices
+    window.addEventListener(
+      'deviceorientationabsolute' as keyof WindowEventMap,
+      handleOrientation as EventListener,
+      { passive: true }
+    );
+
     // Also listen for deviceorientationabsolute for better accuracy on some devices
     const handleAbsoluteOrientation = (event: DeviceOrientationEvent) => {
       const now = Date.now();
-      if (now - lastUpdateTime < UPDATE_THROTTLE) return;
-      lastUpdateTime = now;
+      if (now - lastOrientationUpdate < UPDATE_THROTTLE) return;
+      setLastOrientationUpdate(now);
 
-      if (event.alpha !== null) {
+      const eventWithCompass = event as ExtendedDeviceOrientationEvent;
+      if (event.alpha !== null && eventWithCompass.absolute) {
         let heading = event.alpha;
-        // Absolute orientation is usually more accurate
+
+        // Absolute orientation is usually more accurate and doesn't need inversion
         heading = ((heading % 360) + 360) % 360;
 
         // Apply smoothing for absolute orientation too
         const smoothedHeading = smoothHeading(heading, currentHeading);
         setCurrentHeading(smoothedHeading);
+
+        // Set high accuracy for absolute orientation
+        setCompassAccuracy(5); // Assume good accuracy for absolute readings
       }
     };
 
-    window.addEventListener(
-      'deviceorientationabsolute' as any,
-      handleAbsoluteOrientation as any,
-      { passive: true }
-    );
+    // Try to use absolute orientation if available (more accurate)
+    if ('ondeviceorientationabsolute' in window) {
+      window.addEventListener(
+        'deviceorientationabsolute' as keyof WindowEventMap,
+        handleAbsoluteOrientation as EventListener,
+        { passive: true }
+      );
+    }
 
     return () => {
       window.removeEventListener('deviceorientation', handleOrientation);
       window.removeEventListener(
-        'deviceorientationabsolute' as any,
-        handleAbsoluteOrientation as any
+        'deviceorientationabsolute' as keyof WindowEventMap,
+        handleOrientation as EventListener
       );
+      if ('ondeviceorientationabsolute' in window) {
+        window.removeEventListener(
+          'deviceorientationabsolute' as keyof WindowEventMap,
+          handleAbsoluteOrientation as EventListener
+        );
+      }
     };
-  }, [hasOrientationPermission, smoothHeading, currentHeading]);
+  }, [
+    hasOrientationPermission,
+    smoothHeading,
+    currentHeading,
+    lastOrientationUpdate,
+    calibrationRecommended,
+  ]);
 
   // Calculate Qibla data when location or heading changes
   useEffect(() => {
@@ -280,14 +339,10 @@ export const useQiblaDirection = (): QiblaHookReturn => {
       return;
     }
 
-    // Auto-request permissions on mount for better UX
-    requestLocationPermission();
-    requestOrientationPermissionHandler();
-  }, [
-    isSupported,
-    requestLocationPermission,
-    requestOrientationPermissionHandler,
-  ]);
+    // Don't auto-request permissions on mount
+    // Let the component decide when to request permissions
+    setLoading(false);
+  }, [isSupported]);
 
   const dismissCalibrationWarning = useCallback(() => {
     setCalibrationRecommended(false);
