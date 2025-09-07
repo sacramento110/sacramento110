@@ -1,0 +1,47 @@
+name: Update YouTube Videos Cache
+
+on:
+  schedule:
+    # Run every 3 hours (8 times a day) - efficient RSS2JSON usage
+    - cron: '0 */3 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-cache:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update YouTube videos cache
+        run: npm run update-youtube
+
+      - name: Build project
+        run: npm run build
+
+      - name: Copy files to dist
+        run: |
+          cp public/youtube-cache.json dist/youtube-cache.json
+          cp CNAME dist/CNAME
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          force_orphan: true
